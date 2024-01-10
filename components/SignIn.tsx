@@ -13,13 +13,38 @@ import NextLink from 'next/link';
 
 
 export default function SignIn() {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get('email'),
-			password: data.get('password'),
-		});
+
+		const postData = {
+			user_id: data.get('user_id'),
+			user_password: data.get('password'),
+		};
+
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(postData)
+			});
+
+			if (!response.ok) {
+				const errorResponse = await response.json()
+				throw new Error(errorResponse || "로그인에 실패했습니다.")
+			}
+
+			const successResponse = await response.json();
+			console.log("success", successResponse);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("error", error.message);
+			} else {
+				console.log('로그인에 실패했습니다.');
+			}
+		}
 	};
 
 	return (
