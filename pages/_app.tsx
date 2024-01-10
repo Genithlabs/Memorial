@@ -7,7 +7,8 @@ import {makeTheme} from "@/utils/theme";
 import Footer from "../components/common/Footer";
 import Header from "../components/common/Header";
 import { Provider } from 'react-redux';
-import { store } from "../store/store";
+import {persistor, store} from "../store/store";
+import {PersistGate} from "redux-persist/integration/react";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [mode, setMode] = useState<'light' | 'dark'>('light');
@@ -21,12 +22,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
       <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Header/>
-            <Component {...pageProps} />
-            <Footer/>
-          </ThemeProvider>
+          <PersistGate persistor={persistor}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Header/>
+                <Component {...pageProps} />
+                <Footer/>
+              </ThemeProvider>
+          </PersistGate>
       </Provider>
   );
 }
