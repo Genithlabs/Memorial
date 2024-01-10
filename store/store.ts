@@ -1,10 +1,11 @@
-import {configureStore} from "@reduxjs/toolkit";
-import authSlice from "@/store/slices/authSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice'; // 가정된 파일 경로
 
-const store = configureStore({
+export const store = configureStore({
 	reducer: {
-		authSlice: authSlice.reducer,
-	}
+		auth: authReducer,
+	},
 });
 
-export default store;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
