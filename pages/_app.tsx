@@ -7,7 +7,7 @@ import {makeTheme} from "@/utils/theme";
 import Footer from "../components/common/Footer";
 import Header from "../components/common/Header";
 import { Provider } from 'react-redux';
-import store from "@/store/store";
+import { store } from "../store/store";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [mode, setMode] = useState<'light' | 'dark'>('light');
