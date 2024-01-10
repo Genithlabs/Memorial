@@ -10,9 +10,12 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
+import {useDispatch} from "react-redux";
+import {setAuthState} from "@/store/slices/authSlice";
 
 
 export default function SignIn() {
+	const dispatch = useDispatch();
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -37,7 +40,13 @@ export default function SignIn() {
 			}
 
 			const successResponse = await response.json();
-			console.log("success", successResponse);
+
+			dispatch(setAuthState({
+				accessToken: successResponse.access_token,
+				refreshToken: successResponse.refresh_token,
+				isExpired: false,
+				expiryTime: Date.now() + successResponse.expires_in * 1000
+			}));
 		} catch (error) {
 			if (error instanceof Error) {
 				console.log("error", error.message);
