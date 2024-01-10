@@ -10,12 +10,23 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setAuthState} from "@/store/slices/authSlice";
+import {RootState} from '../store/store';
+import {useRouter} from "next/router";
+import {useEffect} from "react";
 
 
 export default function SignIn() {
+	const router = useRouter();
 	const dispatch = useDispatch();
+	const authState = useSelector((state: RootState) => state.auth);
+
+	useEffect(() => {
+		if (!authState.isExpired) {
+			router.push('/');
+		}
+	}, [authState.isExpired, router]);
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
