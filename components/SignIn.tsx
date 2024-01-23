@@ -10,15 +10,20 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
+import {signIn} from "next-auth/react";
 
 
 export default function SignIn() {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get('user_id'),
-			password: data.get('password'),
+		const user_id = data.get('user_id');
+		const user_password = data.get('password');
+
+		const result = await signIn('credentials', {
+			redirect: false,
+			user_id,
+			user_password,
 		});
 	};
 
