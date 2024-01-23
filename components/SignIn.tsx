@@ -11,9 +11,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
 import {signIn} from "next-auth/react";
+import {useRouter} from "next/router";
 
 
 export default function SignIn() {
+	const router = useRouter();
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -25,6 +27,10 @@ export default function SignIn() {
 			user_id,
 			user_password,
 		});
+
+		if (result?.ok) {
+			router.push('/');
+		}
 	};
 
 	return (
