@@ -8,11 +8,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import NextLink from 'next/link';
+import {useSession} from "next-auth/react";
 
 
 const cards = [1, 2, 3, 4];
 
 export default function Main() {
+	const  {status} = useSession();
+	const redirectUrl = status === 'authenticated' ? '/form' : '/signin';
 	return (
 		<>
 			<main>
@@ -62,10 +65,10 @@ export default function Main() {
 							spacing={2}
 							justifyContent="center"
 						>
-							<NextLink href="/form" passHref>
+							<NextLink href={redirectUrl} passHref>
 								<Button variant="contained">새로 기념관 건립</Button>
 							</NextLink>
-							<NextLink href="/signin" passHref>
+							<NextLink href={redirectUrl} passHref>
 								<Button variant="outlined">내가 건립한 기념관 수정</Button>
 							</NextLink>
 						</Stack>
