@@ -10,12 +10,20 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
-import {signIn} from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import {useRouter} from "next/router";
+import {useEffect} from "react";
 
 
 export default function SignIn() {
+	const {data: session} = useSession();
 	const router = useRouter();
+
+	useEffect(() => {
+		if (session) {
+			router.push('/');
+		}
+	}, [session, router]);
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
