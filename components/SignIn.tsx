@@ -10,16 +10,35 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
+import {signIn, useSession} from "next-auth/react";
+import {useRouter} from "next/router";
+import {useEffect} from "react";
 
 
 export default function SignIn() {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const {data: session} = useSession();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (session) {
+			router.push('/');
+		}
+	}, [session, router]);
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get('email'),
-			password: data.get('password'),
+		const user_id = data.get('user_id');
+		const user_password = data.get('password');
+
+		const result = await signIn('credentials', {
+			redirect: false,
+			user_id,
+			user_password,
 		});
+
+		if (result?.ok) {
+			router.push('/');
+		}
 	};
 
 	return (
@@ -44,10 +63,10 @@ export default function SignIn() {
 							margin="normal"
 							required
 							fullWidth
-							id="email"
-							label="Email Address"
-							name="email"
-							autoComplete="email"
+							id="user_id"
+							label="ID"
+							name="user_id"
+							autoComplete="ID"
 							autoFocus
 						/>
 						<TextField
