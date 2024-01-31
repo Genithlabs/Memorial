@@ -42,7 +42,7 @@ export default function Main() {
 								fontWeight: 300
 							}}
 						>
-							기념관 만들기
+							기념관 만들기!
 						</Typography>
 						<Typography
 							align="center"
