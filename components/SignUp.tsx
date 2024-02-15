@@ -7,9 +7,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 
 function Copyright() {
 	return (
@@ -25,16 +24,47 @@ function Copyright() {
 }
 
 export default function SignUp() {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const router = useRouter();
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user/register`;
+
+		const formData = {
 			user_id: data.get('user_id'),
 			user_name: data.get('user_name'),
 			email: data.get('email'),
 			user_password: data.get('user_password'),
 			re_password: data.get('re_user_password'),
-		});
+		};
+
+		// 유효성 검사
+		if (!formData.user_id || !formData.user_name || !formData.email || !formData.user_password || !formData.re_password) {
+			alert('모든 값을 입력해주세요.');
+			return;
+		}
+
+		if (formData.user_password !== formData.re_password) {
+			alert('비밀번호가 일치하지 않습니다.');
+			return;
+		}
+
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(formData),
+			});
+
+			if (response.ok) {
+				router.push('/signin');
+			} else {
+				const result = await response.json();
+				alert('회원 가입 실패: ' + result.error[0]);
+			}
+		} catch (error) {
+			alert('회원 가입 중 에러 발생: ' + error);
+		}
 	};
 
 	return (
