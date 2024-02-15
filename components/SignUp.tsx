@@ -29,8 +29,11 @@ export default function SignUp() {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		console.log({
+			user_id: data.get('user_id'),
+			user_name: data.get('user_name'),
 			email: data.get('email'),
-			password: data.get('password'),
+			user_password: data.get('user_password'),
+			re_password: data.get('re_user_password'),
 		});
 	};
 
@@ -49,29 +52,29 @@ export default function SignUp() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component="h1" variant="h5">
-						Sign Up
+						회원 가입
 					</Typography>
 					<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
 						<Grid container spacing={2}>
-							<Grid item xs={12} sm={6}>
+							<Grid item xs={12}>
 								<TextField
 									autoComplete="given-name"
-									name="firstName"
+									name="user_id"
 									required
 									fullWidth
-									id="firstName"
-									label="First Name"
+									id="user_id"
+									label="ID"
 									autoFocus
 								/>
 							</Grid>
-							<Grid item xs={12} sm={6}>
+							<Grid item xs={12}>
 								<TextField
+									autoComplete="given-name"
+									name="user_name"
 									required
 									fullWidth
-									id="lastName"
-									label="Last Name"
-									name="lastName"
-									autoComplete="family-name"
+									id="user_name"
+									label="이름"
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -79,26 +82,28 @@ export default function SignUp() {
 									required
 									fullWidth
 									id="email"
-									label="Email Address"
+									label="Email"
 									name="email"
-									autoComplete="email"
 								/>
 							</Grid>
 							<Grid item xs={12}>
 								<TextField
 									required
 									fullWidth
-									name="password"
-									label="Password"
+									name="user_password"
+									label="비밀번호"
 									type="password"
-									id="password"
-									autoComplete="new-password"
+									id="user_password"
 								/>
 							</Grid>
 							<Grid item xs={12}>
-								<FormControlLabel
-									control={<Checkbox value="allowExtraEmails" color="primary" />}
-									label="I want to receive inspiration, marketing promotions and updates via email."
+								<TextField
+									required
+									fullWidth
+									name="re_user_password"
+									label="비밀번호 재입력"
+									type="password"
+									id="re_user_password"
 								/>
 							</Grid>
 						</Grid>
@@ -108,13 +113,13 @@ export default function SignUp() {
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
 						>
-							Sign Up
+							확인
 						</Button>
 						<Grid container justifyContent="flex-end">
 							<Grid item>
 								<NextLink href="/signin" passHref>
 									<MUILink variant="body2" component={"button"}>
-										Already have an account? Sign in
+										이미 회원 이신가요?
 									</MUILink>
 								</NextLink>
 							</Grid>
