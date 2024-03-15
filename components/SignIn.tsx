@@ -91,18 +91,26 @@ export default function SignIn() {
 						>
 							Sign In
 						</Button>
-						<Grid container>
-							<Grid item xs>
-								<NextLink href="/" passHref>
-									<MUILink variant="body2" component={"button"}>
-										Forgot password?
-									</MUILink>
-								</NextLink>
+						<Grid container justifyContent="space-between" alignItems="center">
+							<Grid item>
+								<Typography variant="body2">
+									<NextLink href="/findId" passHref>
+										<MUILink sx={{ color: 'black', textDecoration: 'none' }}>
+											아이디 찾기
+										</MUILink>
+									</NextLink>
+									{' / '}
+									<NextLink href="/find-password" passHref>
+										<MUILink sx={{ color: 'black', textDecoration: 'none' }}>
+											패스워드 찾기
+										</MUILink>
+									</NextLink>
+								</Typography>
 							</Grid>
 							<Grid item>
 								<NextLink href="/signup" passHref>
-									<MUILink variant="body2" component={"button"}>
-										{"Don't have an account? Sign Up"}
+									<MUILink sx={{ color: 'black', textDecoration: 'none' }} variant="body2">
+										회원가입
 									</MUILink>
 								</NextLink>
 							</Grid>
