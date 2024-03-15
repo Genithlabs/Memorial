@@ -45,7 +45,7 @@ export default function FindIdForm() {
                 if (result.result === 'sucess') {
                     alert(`아이디: ${result.user_id}`);
                 } else {
-                    console.log(result);
+                    alert(result.message);
                 }
             } else {
                 const result = await response.json();
