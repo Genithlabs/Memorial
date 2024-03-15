@@ -103,14 +103,14 @@ export default function FindIdForm() {
                         <Grid container>
                             <Grid item xs>
                                 <NextLink href="/signin" passHref>
-                                    <MUILink variant="body2" component={"button"} sx={{ color: 'black', textDecoration: 'none' }}>
+                                    <MUILink variant="body2" component={"button"}>
                                         로그인하러 이동
                                     </MUILink>
                                 </NextLink>
                             </Grid>
                             <Grid item>
                                 <NextLink href="/signup" passHref>
-                                    <MUILink variant="body2" component={"button"} sx={{ color: 'black', textDecoration: 'none' }}>
+                                    <MUILink variant="body2" component={"button"}>
                                         회원가입
                                     </MUILink>
                                 </NextLink>

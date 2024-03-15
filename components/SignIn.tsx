@@ -95,13 +95,13 @@ export default function SignIn() {
 							<Grid item>
 								<Typography variant="body2">
 									<NextLink href="/findId" passHref>
-										<MUILink sx={{ color: 'black', textDecoration: 'none' }}>
+										<MUILink>
 											아이디 찾기
 										</MUILink>
 									</NextLink>
 									{' / '}
 									<NextLink href="/find-password" passHref>
-										<MUILink sx={{ color: 'black', textDecoration: 'none' }}>
+										<MUILink>
 											패스워드 찾기
 										</MUILink>
 									</NextLink>
@@ -109,7 +109,7 @@ export default function SignIn() {
 							</Grid>
 							<Grid item>
 								<NextLink href="/signup" passHref>
-									<MUILink sx={{ color: 'black', textDecoration: 'none' }} variant="body2">
+									<MUILink variant="body2">
 										회원가입
 									</MUILink>
 								</NextLink>
