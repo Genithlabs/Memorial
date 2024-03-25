@@ -118,7 +118,7 @@ export default function ResetPasswordForm() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            아이디 찾기
+                            비밀번호 변경
                         </Button>
                     </Box>
                 </Box>
