@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 
 		let data;
-		if (process.env.APP_ENV_VALUE === 'development') {
+		if (process.env.APP_ENV_VALUE !== 'production') {
 			data = [mocks_visitorMessages, mocks_memories, mocks_detail];
 		} else {
 			data = await Promise.all([fetchVisitorMessages(userId), fetchMemories(userId), fetchDetail(userId)]);
