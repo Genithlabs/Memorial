@@ -45,4 +45,16 @@ export default NextAuth({
 			}
 		})
 	],
+	callbacks: {
+		async jwt({ token, user }) {
+			if (user) {
+				token.accessToken = (user as CustomUser).access_token;
+			}
+			return token;
+		},
+		async session({ session, token }) {
+			session.accessToken = `${token.accessToken}`;
+			return session;
+		}
+	},
 })
