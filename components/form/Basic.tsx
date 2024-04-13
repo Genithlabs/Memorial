@@ -9,9 +9,23 @@ import Button from '@mui/material/Button';
 import Paper from "@mui/material/Paper";
 import Image from "next/image";
 
-export default function Basic() {
-	const [selectedDate, setSelectedDate] = useState(dayjs());
+type BasicProps = {
+	basicInfo: {
+		user_name: string,
+		birth_start: string,
+		birth_end: string,
+		bg: File | null,
+		profile: File | null,
+		bgm: File | null
+	},
+	setBasicInfo: (basicInfo: any) => void
+}
+
+export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
+	const [selectedStartDate, setSelectedStartDate] = useState(dayjs());
+	const [selectedEndDate, setSelectedEndDate] = useState(dayjs());
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
+	const [selectedBgImage, setSelectedBgImage] = useState<string | null>(null);
 	const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,10 +35,18 @@ export default function Basic() {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				if (e.target) {
-					setSelectedImage(e.target.result as string);
+					if (event.target.name === 'bg') {
+						setSelectedBgImage(e.target.result as string);
+					} else {
+						setSelectedImage(e.target.result as string);
+					}
 				}
 			};
 			reader.readAsDataURL(file);
+			console.log(event.target.name);
+			setBasicInfo({
+				...basicInfo, [event.target.name]: file
+			})
 		}
 		if (event.target) {
 			event.target.value = '';
@@ -35,9 +57,30 @@ export default function Basic() {
 		const file = event.target.files && event.target.files[0];
 		if (file) {
 			setSelectedAudio(file.name);
+			setBasicInfo({
+				...basicInfo, bgm: file
+			})
 		}
 		if (event.target) {
 			event.target.value = '';
+		}
+	};
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setBasicInfo({
+			...basicInfo,
+			[name]: value
+		});
+	};
+
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, files } = event.target;
+		if (files && files[0]) {
+			setBasicInfo({
+				...basicInfo,
+				[name]: files[0]
+			});
 		}
 	};
 
@@ -50,11 +93,15 @@ export default function Basic() {
 				<Grid item xs={12} sm={12}>
 					<TextField
 						required
-						id="firstname"
-						name="firstname"
+						id="user_name"
+						name="user_name"
 						label="기념인 이름"
 						fullWidth
 						variant="standard"
+						onChange={e => setBasicInfo({
+							...basicInfo,
+							user_name: e.target.value
+						})}
 					/>
 				</Grid>
 			</Grid>
@@ -67,8 +114,13 @@ export default function Basic() {
 						<Grid item xs={5.5} sm={5.5}>
 							<DatePicker
 								label="태어난 생년월일"
-								value={selectedDate}
-								onChange={(newValue) => setSelectedDate(dayjs(newValue))}
+								value={selectedStartDate}
+								onChange={(newValue) => {
+									setSelectedStartDate(dayjs(newValue));
+									setBasicInfo({
+										...basicInfo, birth_start: dayjs(newValue).format('YYYY-MM-DD')
+									});
+								}}
 								format="YYYY-MM-DD"
 								sx={{ width: '100%' }}
 							/>
@@ -79,14 +131,52 @@ export default function Basic() {
 						<Grid item xs={5.5} sm={5.5}>
 							<DatePicker
 								label="돌아간 생년월일"
-								value={selectedDate}
-								onChange={(newValue) => setSelectedDate(dayjs(newValue))}
+								value={selectedEndDate}
+								onChange={(newValue) => {
+									setSelectedEndDate(dayjs(newValue));
+									setBasicInfo({
+										...basicInfo, birth_end: dayjs(newValue).format('YYYY-MM-DD')
+									});
+								}}
 								format="YYYY-MM-DD"
 								sx={{ width: '100%' }}
 							/>
 						</Grid>
 					</Grid>
 				</LocalizationProvider>
+			</Grid>
+			<Grid item xs={12} sx={{ pt: 4 }}>
+				<Typography variant="h6">
+					기념인 배경 사진
+				</Typography>
+				<Grid item xs={12}>
+					<Paper variant="outlined" sx={{ p: { xs: 3, md: 4 }, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+						<input
+							accept="image/*"
+							style={{ display: 'none' }}
+							id="bg"
+							name="bg"
+							type="file"
+							onChange={handleImageChange}
+							ref={inputRef}
+						/>
+						{!selectedBgImage &&
+							<label htmlFor="bg">
+								<Button variant="contained" component="span">
+									사진을 선택해주세요.
+								</Button>
+							</label>
+						}
+						{selectedBgImage &&
+							<>
+								<Image src={selectedBgImage} alt="Selected" width={100} height={100} onClick={() => inputRef.current && inputRef.current.click()} />
+								<Button variant="text" onClick={() => setSelectedBgImage(null)} style={{ position: 'absolute', top: 0, right: 0 }} color="inherit">
+									x
+								</Button>
+							</>
+						}
+					</Paper>
+				</Grid>
 			</Grid>
 			<Grid item xs={12} sx={{ pt: 4 }}>
 				<Typography variant="h6">
@@ -97,13 +187,14 @@ export default function Basic() {
 						<input
 							accept="image/*"
 							style={{ display: 'none' }}
-							id="raised-button-file"
+							id="profile"
+							name="profile"
 							type="file"
 							onChange={handleImageChange}
 							ref={inputRef}
 						/>
 						{!selectedImage &&
-                            <label htmlFor="raised-button-file">
+                            <label htmlFor="profile">
                                 <Button variant="contained" component="span">
 	                                사진을 선택해주세요.
                                 </Button>
@@ -111,7 +202,7 @@ export default function Basic() {
 						}
 						{selectedImage &&
                             <>
-                                <Image src={selectedImage} alt="Selected" style={{ width: '100px', height: '100px' }} onClick={() => inputRef.current && inputRef.current.click()} />
+								<Image src={selectedImage} alt="Selected" width={100} height={100} onClick={() => inputRef.current && inputRef.current.click()} />
                                 <Button variant="text" onClick={() => setSelectedImage(null)} style={{ position: 'absolute', top: 0, right: 0 }} color="inherit">
                                     x
                                 </Button>
@@ -129,12 +220,13 @@ export default function Basic() {
 						<input
 							accept="audio/*"
 							style={{ display: 'none' }}
-							id="raised-button-audio-file"
+							id="bgm"
+							name="bgm"
 							type="file"
 							onChange={handleAudioChange}
 						/>
 						{!selectedAudio &&
-                            <label htmlFor="raised-button-audio-file">
+                            <label htmlFor="bgm">
                                 <Button variant="contained" component="span">
                                     음악 파일을 선택해주세요.
                                 </Button>
