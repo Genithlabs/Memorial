@@ -49,7 +49,7 @@ export default function Form() {
 
 	const handleNext = async() => {
 		if (activeStep === 0) {
-			if (!basicInfo.user_name || !basicInfo.birth_start || !basicInfo.birth_end || !basicInfo.bg || !basicInfo.profile || !basicInfo.bgm) {
+			if (!basicInfo.user_name || !basicInfo.birth_start || !basicInfo.birth_end || !basicInfo.bg || !basicInfo.profile ) {
 				alert("모든 정보를 입력해 주세요.");
 				return;
 			}
