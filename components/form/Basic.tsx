@@ -43,7 +43,6 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 				}
 			};
 			reader.readAsDataURL(file);
-			console.log(event.target.name);
 			setBasicInfo({
 				...basicInfo, [event.target.name]: file
 			})
