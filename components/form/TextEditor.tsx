@@ -2,7 +2,12 @@ import { useEffect, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css'; // import styles
 
-function TextEditor() {
+type ContentProps = {
+	content: string,
+	setContent: (content: any) => void
+}
+
+function TextEditor({content, setContent}: ContentProps) {
 	const quillRef = useRef(null);
 
 	useEffect(() => {
@@ -20,6 +25,9 @@ function TextEditor() {
 						['clean']
 					],
 				},
+			});
+			quill.on('text-change', () => {
+				setContent(quill.root.innerHTML)
 			});
 		}
 	}, []);
