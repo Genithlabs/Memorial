@@ -62,6 +62,7 @@ export default function Memory({ memories }: { memories: Memory[] }) {
 					return (
 						<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
 							<div style={{display:"flex"}}>
+								<Typography>이름</Typography>
 								<Typography sx={{ p: "0 .5rem"}}>•</Typography>
 								<Typography>{formattedDate}</Typography>
 							</div>
