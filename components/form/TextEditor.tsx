@@ -63,7 +63,7 @@ function TextEditor({ content, setContent }: ContentProps) {
 			quill.getModule('toolbar').addHandler('image', imageHandler);
 
 			quill.on('text-change', () => {
-				setContent(quill.root.innerHTML);
+				setContent(quill.root.innerHTML)
 			});
 		}
 	}, [setContent]);
