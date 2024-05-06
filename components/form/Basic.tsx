@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import {useState, useRef, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -14,20 +14,27 @@ type BasicProps = {
 		user_name: string,
 		birth_start: string,
 		birth_end: string,
-		bg: File | null,
-		profile: File | null,
-		bgm: File | null
+		profile: string | null,
+		bgm: string | null
 	},
 	setBasicInfo: (basicInfo: any) => void
+
 }
 
 export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
-	const [selectedStartDate, setSelectedStartDate] = useState(dayjs());
-	const [selectedEndDate, setSelectedEndDate] = useState(dayjs());
+	const [selectedStartDate, setSelectedStartDate] = useState(dayjs(basicInfo.birth_start));
+	const [selectedEndDate, setSelectedEndDate] = useState(dayjs(basicInfo.birth_end));
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
-	const [selectedBgImage, setSelectedBgImage] = useState<string | null>(null);
 	const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		setSelectedImage(basicInfo.profile || null);
+	}, [basicInfo.profile]);
+
+	useEffect(() => {
+		setSelectedAudio(basicInfo.bgm || null);
+	}, [basicInfo.bgm]);
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files && event.target.files[0];
@@ -35,11 +42,7 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				if (e.target) {
-					if (event.target.name === 'bg') {
-						setSelectedBgImage(e.target.result as string);
-					} else {
-						setSelectedImage(e.target.result as string);
-					}
+					setSelectedImage(e.target.result as string);
 				}
 			};
 			reader.readAsDataURL(file);
@@ -65,24 +68,6 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 		}
 	};
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = event.target;
-		setBasicInfo({
-			...basicInfo,
-			[name]: value
-		});
-	};
-
-	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, files } = event.target;
-		if (files && files[0]) {
-			setBasicInfo({
-				...basicInfo,
-				[name]: files[0]
-			});
-		}
-	};
-
 	return (
 		<>
 			<Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
@@ -97,6 +82,7 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 						label="기념인 이름"
 						fullWidth
 						variant="standard"
+						value={basicInfo.user_name}
 						onChange={e => setBasicInfo({
 							...basicInfo,
 							user_name: e.target.value
@@ -143,39 +129,6 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 						</Grid>
 					</Grid>
 				</LocalizationProvider>
-			</Grid>
-			<Grid item xs={12} sx={{ pt: 4 }}>
-				<Typography variant="h6">
-					기념인 배경 사진
-				</Typography>
-				<Grid item xs={12}>
-					<Paper variant="outlined" sx={{ p: { xs: 3, md: 4 }, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-						<input
-							accept="image/*"
-							style={{ display: 'none' }}
-							id="bg"
-							name="bg"
-							type="file"
-							onChange={handleImageChange}
-							ref={inputRef}
-						/>
-						{!selectedBgImage &&
-							<label htmlFor="bg">
-								<Button variant="contained" component="span">
-									사진을 선택해주세요.
-								</Button>
-							</label>
-						}
-						{selectedBgImage &&
-							<>
-								<Image src={selectedBgImage} alt="Selected" width={100} height={100} onClick={() => inputRef.current && inputRef.current.click()} />
-								<Button variant="text" onClick={() => setSelectedBgImage(null)} style={{ position: 'absolute', top: 0, right: 0 }} color="inherit">
-									x
-								</Button>
-							</>
-						}
-					</Paper>
-				</Grid>
 			</Grid>
 			<Grid item xs={12} sx={{ pt: 4 }}>
 				<Typography variant="h6">

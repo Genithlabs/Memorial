@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
 import Basic from "../components/form/Basic";
 import Birth from "../components/form/Birth";
@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 
 const steps = ['기본 정보 입력', '생애 입력', '건립한 기념관 보기'];
 
-function getStepContent(step: number, router:any, basicInfo: any, setBasicInfo: any, content: any, setContent: any) {
+function getStepContent(step: number, router:any, basicInfo: any, setBasicInfo: any, content: any, setContent: any, memorialId: any) {
 	switch (step) {
 		case -1:
 			router.push('/');
@@ -27,7 +27,7 @@ function getStepContent(step: number, router:any, basicInfo: any, setBasicInfo: 
 		case 1:
 			return <Birth content={content} setContent={setContent} />;
 		case 2:
-			return <Preview />;
+			return <Preview memorialId={memorialId}/>;
 		default:
 			throw new Error('Unknown step');
 	}
@@ -41,34 +41,68 @@ export default function Form() {
 		user_name: '',
 		birth_start: dayjs().format('YYYY-MM-DD'),
 		birth_end: dayjs().format('YYYY-MM-DD'),
-		bg: '',
 		profile: '',
 		bgm: ''
 	});
 	const [content, setContent] = useState("");
+	const [memorialId, setMemorialId] = useState("");
+
+	useEffect(() => {
+		const fetchView = async () => {
+			if (session) {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${session.accessToken}`
+					},
+				});
+				if (response.ok) {
+					const result = await response.json();
+					if (result.result === 'success' && result.data) {
+						const data = result.data;
+						const updatedBasicInfo = {
+							...basicInfo,
+							user_name: data.name,
+							profile: data.profile_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_profile_image.file_path}${data.attachment_profile_image.file_name}` : '',
+							bgm: data.bgm_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_bgm.file_path}${data.attachment_bgm.file_name}` : ''
+						};
+						setBasicInfo(updatedBasicInfo);
+						setContent(data.career_contents);
+						setMemorialId(data.id);
+					}
+				}
+			}
+		}
+		fetchView();
+	}, []);
+
 
 	const handleNext = async() => {
 		if (activeStep === 0) {
-			if (!basicInfo.user_name || !basicInfo.birth_start || !basicInfo.birth_end || !basicInfo.bg || !basicInfo.profile ) {
+			if (!basicInfo.user_name || !basicInfo.birth_start || !basicInfo.birth_end || !basicInfo.profile ) {
 				alert("모든 정보를 입력해 주세요.");
 				return;
 			}
+			setActiveStep(1);
 		}
 		if (activeStep === 1) {
 			if (!content) {
 				alert("모든 정보를 입력해 주세요.");
 				return;
 			}
-			const url = `${process.env.NEXT_PUBLIC_API_URL}/api/memorial/register`;
 
 			// FormData 객체 생성
 			const formData = new FormData();
 			formData.append('user_name', basicInfo.user_name);
 			formData.append('birth_start', basicInfo.birth_start ? basicInfo.birth_start : dayjs().format('YYYY-MM-DD'));
 			formData.append('birth_end', basicInfo.birth_end ? basicInfo.birth_end : dayjs().format('YYYY-MM-DD'));
-			formData.append('profile', basicInfo.profile);
+			formData.append('profile',typeof basicInfo.profile === "object" ? basicInfo.profile : "");
 			formData.append('bgm', basicInfo.bgm);
 			formData.append('career', content);
+
+			const url = `${memorialId ? 
+				`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/${memorialId}/edit` : 
+				`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/register`}`;
 
 			try {
 				if (session) {
@@ -81,6 +115,12 @@ export default function Form() {
 					});
 					if (!response.ok) {
 						throw new Error('ERROR!!');
+					} else {
+						const result = await response.json();
+						if (result.data) {
+							setMemorialId(result.data.id);
+						}
+						setActiveStep(2);
 					}
 				} else {
 					console.error('Session is null');
@@ -89,7 +129,6 @@ export default function Form() {
 				console.error(error);
 			}
 		}
-		setActiveStep(activeStep + 1);
 	};
 
 	const handleBack = () => {
@@ -111,7 +150,7 @@ export default function Form() {
 						))}
 					</Stepper>
 					<>
-						{getStepContent(activeStep, router, basicInfo, setBasicInfo, content, setContent)}
+						{getStepContent(activeStep, router, basicInfo, setBasicInfo, content, setContent, memorialId)}
 						<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
 							<Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
 								뒤로

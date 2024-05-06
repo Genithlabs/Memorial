@@ -8,7 +8,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 
-export default function Preview() {
+export default function Preview({memorialId: memorialId}: any) {
 	return (
 		<>
 			<Container component="main"
@@ -36,7 +36,7 @@ export default function Preview() {
 				>
 					앞으로 30일 동안 기념관을 무료로 이용할 수 있습니다.
 				</Typography>
-				<NextLink href="/detail/1">
+				<NextLink href={`/detail/${memorialId}`}>
 					<Button variant="contained" sx={{ mt: 2, fontSize: "1rem", p: 2, fontWeight: "bold" }}>건립한 기념관 보기</Button>
 				</NextLink>
 				<Typography
