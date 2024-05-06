@@ -4,12 +4,21 @@ import Container from "@mui/material/Container";
 import TabsCustomized from './detail/TabsCustomized';
 import {ALLProps} from './detail/interfaces';
 
+
+const getYearFromDate = (dateStr: string): string => {
+	const date = new Date(dateStr);
+	return date.getFullYear().toString();
+}
+
 export default function Detail({ visitorMessages, memories, detail }: ALLProps) {
+	// Extract only the year from birth_start and birth_end
+	const birthStartYear = getYearFromDate(detail.birth_start);
+	const birthEndYear = getYearFromDate(detail.birth_end);
 	return (
 		<>
 			<main>
 				<div style={{ position: 'relative', width: '100%', height: '20rem'}}>
-					<Image src={detail?.backgroundImage} alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
+					<Image src="/cloud2.png" alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
 				</div>
 				<Container
 					sx={{
@@ -34,7 +43,15 @@ export default function Detail({ visitorMessages, memories, detail }: ALLProps) 
 						overflow: "auto",
 						boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
 				}}>
-					<Image src={detail?.profileImage} alt="profile image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" />
+					{detail?.attachment_profile_image && (
+						<Image
+							src={`${process.env.NEXT_PUBLIC_IMAGE}${detail.attachment_profile_image.file_path}${detail.attachment_profile_image.file_name}`}
+							alt="profile image"
+							fill
+							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							style={{ objectFit: 'cover' }}
+						/>
+					)}
 				</Container>
 				<Container
 					sx={{
@@ -58,7 +75,7 @@ export default function Detail({ visitorMessages, memories, detail }: ALLProps) 
 							fontWeight: 'bold',
 						}}
 					>
-						{detail?.name}
+						이름
 					</Typography>
 					<Typography
 						sx={{
@@ -70,7 +87,7 @@ export default function Detail({ visitorMessages, memories, detail }: ALLProps) 
 							fontWeight: '400',
 						}}
 					>
-						{detail?.birth}
+						{birthStartYear} - {birthEndYear}
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>

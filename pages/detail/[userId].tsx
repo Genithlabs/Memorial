@@ -1,8 +1,6 @@
 import Detail from '../../components/Detail';
 import { GetServerSideProps } from "next";
-import { fetchDetail, fetchMemories, fetchVisitorMessages } from "../api/detail";
-import { ALLProps } from "@/components/detail/interfaces";
-import { visitorMessages as mocks_visitorMessages, memories as mocks_memories, detail as mocks_detail } from "../../mocks/detail";
+import {ALLProps, AttachmentBgm, AttachmentProfileImage} from "@/components/detail/interfaces";
 
 export default function DetailPage(props: ALLProps) {
 	return <Detail {...props} />;
@@ -21,21 +19,53 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			throw new Error("Invalid userId");
 		}
 
-		let data = [mocks_visitorMessages, mocks_memories, mocks_detail];
+		// API 호출
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/api/memorial/${userId}/detail`;
+		const response = await fetch(url);
 
-		const [visitorMessages, memories, detail] = data;
+		// API 응답 상태 확인
+		if (response.ok) {
+			const result = await response.json();
 
-		return {
-			props: {
-				visitorMessages,
-				memories,
-				detail
+			// API 결과가 성공인 경우에만 데이터 설정
+			if (result.result === 'success') {
+				const data = result.data;
+
+				const visitorMessages = data.visit_comments;
+				const memories = data.story;
+				const detail = {
+					id: data.id,
+					birth_start: data.birth_start,
+					birth_end: data.birth_end,
+					career_contents: data.career_contents,
+					is_open: data.is_open,
+					profile_attachment_id: data.profile_attachment_id,
+					bgm_attachment_id: data.bgm_attachment_id,
+					created_at: data.created_at,
+					updated_at: data.updated_at,
+					attachment_profile_image: data.attachment_profile_image,
+					attachment_bgm: data.attachment_bgm,
+				};
+
+				return {
+					props: {
+						visitorMessages,
+						memories,
+						detail,
+					}
+				};
+			} else {
+				console.error('API 오류 메시지:', result.message);
+				return { notFound: true };
 			}
-		};
+		} else {
+			const errorResult = await response.json();
+			console.error('API 응답 오류:', errorResult);
+			return { notFound: true };
+		}
 	} catch (error) {
-		console.error("Error fetching data in getServerSideProps:", error);
-		return {
-			notFound: true
-		};
+		// 오류 처리
+		console.error("데이터 가져오기 중 오류:", error);
+		return { notFound: true };
 	}
-}
+};
