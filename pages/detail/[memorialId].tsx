@@ -12,15 +12,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			throw new Error("Params are missing");
 		}
 
-		// userId를 number로 변환
-		const userId = Number(context.params.userId);
+		// memorialId를 number로 변환
+		const memorialId = Number(context.params.memorialId);
 
-		if (isNaN(userId)) {
-			throw new Error("Invalid userId");
+		if (isNaN(memorialId)) {
+			throw new Error("Invalid memorialId");
 		}
 
 		// API 호출
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/api/memorial/${userId}/detail`;
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/api/memorial/${memorialId}/detail`;
 		const response = await fetch(url);
 
 		// API 응답 상태 확인
@@ -52,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 						visitorMessages,
 						memories,
 						detail,
+						memorialId,
 					}
 				};
 			} else {
