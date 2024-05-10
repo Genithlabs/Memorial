@@ -4,9 +4,9 @@ import Button from "@mui/material/Button";
 import {useState} from "react";
 import MemoryForm from "@/components/detail/MemoryForm";
 import Grow from "@mui/material/Grow";
-import {Memory} from "./interfaces";
+import {MemoryProps} from "./interfaces";
 
-export default function Memory({ memories }: { memories: Memory[] }) {
+export default function Memory({ memories, memorialId }: MemoryProps) {
 
 	const [showFrom, setShowFormArea] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(true);  // 처음 로드 여부를 확인하는 상태

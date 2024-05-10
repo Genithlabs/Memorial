@@ -7,7 +7,7 @@ import {useState} from "react";
 import Grow from "@mui/material/Grow";
 import {LifeProps} from "./interfaces";
 
-export default function Life({visitorMessages, detail}:LifeProps) {
+export default function Life({visitorMessages, detail, memorialId}:LifeProps) {
 
 	const [showTextArea, setShowTextArea] = useState(false);
 

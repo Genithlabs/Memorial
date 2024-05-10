@@ -10,7 +10,7 @@ const getYearFromDate = (dateStr: string): string => {
 	return date.getFullYear().toString();
 }
 
-export default function Detail({ visitorMessages, memories, detail }: ALLProps) {
+export default function Detail({ visitorMessages, memories, detail, memorialId }: ALLProps) {
 	// Extract only the year from birth_start and birth_end
 	const birthStartYear = getYearFromDate(detail.birth_start);
 	const birthEndYear = getYearFromDate(detail.birth_end);
@@ -91,7 +91,7 @@ export default function Detail({ visitorMessages, memories, detail }: ALLProps) 
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
-					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail}/>
+					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail} memorialId={memorialId}/>
 				</Container>
 			</main>
 		</>
