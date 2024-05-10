@@ -12,6 +12,7 @@ export interface VisitorMessage {
 export interface Memory {
 	id: number
 	user_id: number
+	user_name: string|null
 	memorial_id: number
 	title: string
 	message: string

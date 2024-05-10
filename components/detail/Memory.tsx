@@ -55,14 +55,14 @@ export default function Memory({ memories, memorialId }: MemoryProps) {
 			   }
 			</Box>
 			<Box sx={{ mt: "1rem" }}>
-				{memories.map(({created_at, message}, index) => {
+				{memories.map(({created_at, message, user_name}, index) => {
 					const date = new Date(created_at);
 					const formattedDate = `${date.getMonth() + 1}월 ${date.getDate()}일`;
 
 					return (
 						<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
 							<div style={{display:"flex"}}>
-								<Typography>이름</Typography>
+								<Typography>{user_name || "이름"}</Typography>
 								<Typography sx={{ p: "0 .5rem"}}>•</Typography>
 								<Typography>{formattedDate}</Typography>
 							</div>
