@@ -9,11 +9,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import NextLink from 'next/link';
 import {useSession} from "next-auth/react";
+import {MainProps} from "@/types/main";
 
-
-const cards = [1, 2, 3, 4];
-
-export default function Main() {
+export default function Main({memorialCards}: MainProps) {
 	const  {status} = useSession();
 	const redirectUrl = status === 'authenticated' ? '/form' : '/signin';
 	return (
@@ -92,8 +90,8 @@ export default function Main() {
 					</Typography>
 					{/* End hero unit */}
 					<Grid container spacing={4}>
-						{cards.map((card) => (
-							<Grid item key={card} xs={12} sm={6} md={3}>
+						{memorialCards.map((card) => (
+							<Grid item key={card.id} xs={12} sm={6} md={3}>
 								<Card
 									sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
 								>
@@ -103,7 +101,7 @@ export default function Main() {
 											// 16:9
 											pt: '56.25%',
 										}}
-										image="https://source.unsplash.com/random?wallpapers"
+										image={card.attachment_profile_image ? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}` : "https://source.unsplash.com/random?wallpapers"}
 									/>
 								</Card>
 							</Grid>
