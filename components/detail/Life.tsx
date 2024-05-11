@@ -7,7 +7,7 @@ import {useState} from "react";
 import Grow from "@mui/material/Grow";
 import {LifeProps} from "./interfaces";
 
-export default function Life({visitorMessages, detail}:LifeProps) {
+export default function Life({visitorMessages, detail, memorialId}:LifeProps) {
 
 	const [showTextArea, setShowTextArea] = useState(false);
 
@@ -23,7 +23,7 @@ export default function Life({visitorMessages, detail}:LifeProps) {
 			}}
 			  className={"diff-card-section"}
 			>
-				{detail && <div dangerouslySetInnerHTML={{ __html: detail.contents }} />}
+				{detail && <div dangerouslySetInnerHTML={{ __html: detail.career_contents }} />}
 			</Container>
 			<Box>
 				<Typography sx={{
@@ -61,18 +61,23 @@ export default function Life({visitorMessages, detail}:LifeProps) {
 				)}
 			</Box>
 			<Box sx={{ mt: "1rem" }}>
-				{visitorMessages?.map(({date, message, name}, index) => (
-					<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
-						<div style={{display:"flex"}}>
-							<Typography>{name}</Typography>
-							<Typography sx={{ p: "0 .5rem"}}>•</Typography>
-							<Typography>{date}</Typography>
-						</div>
-						<div>
-							<div dangerouslySetInnerHTML={{ __html: message }} />
-						</div>
-					</Box>
-				))}
+				{visitorMessages?.map(({created_at, message, user_name}, index) => {
+					const date = new Date(created_at);
+					const formattedDate = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+
+					return (
+						<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
+							<div style={{display:"flex"}}>
+								<Typography>{user_name}</Typography>
+								<Typography sx={{ p: "0 .5rem"}}>•</Typography>
+								<Typography>{formattedDate}</Typography>
+							</div>
+							<div>
+								<div dangerouslySetInnerHTML={{ __html: message }} />
+							</div>
+						</Box>
+					);
+				})}
 			</Box>
 		</>
 	)

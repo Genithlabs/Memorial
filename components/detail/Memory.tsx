@@ -4,9 +4,9 @@ import Button from "@mui/material/Button";
 import {useState} from "react";
 import MemoryForm from "@/components/detail/MemoryForm";
 import Grow from "@mui/material/Grow";
-import {Memory} from "./interfaces";
+import {MemoryProps} from "./interfaces";
 
-export default function Memory({ memories }: { memories: Memory[] }) {
+export default function Memory({ memories, memorialId }: MemoryProps) {
 
 	const [showFrom, setShowFormArea] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(true);  // 처음 로드 여부를 확인하는 상태
@@ -55,18 +55,23 @@ export default function Memory({ memories }: { memories: Memory[] }) {
 			   }
 			</Box>
 			<Box sx={{ mt: "1rem" }}>
-				{memories.map(({date, message, name}, index) => (
-					<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
-						<div style={{display:"flex"}}>
-							<Typography>{name}</Typography>
-							<Typography sx={{ p: "0 .5rem"}}>•</Typography>
-							<Typography>{date}</Typography>
-						</div>
-						<div>
-							<div dangerouslySetInnerHTML={{ __html: message }} />
-						</div>
-					</Box>
-				))}
+				{memories.map(({created_at, message, user_name}, index) => {
+					const date = new Date(created_at);
+					const formattedDate = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+
+					return (
+						<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
+							<div style={{display:"flex"}}>
+								<Typography>{user_name || "이름"}</Typography>
+								<Typography sx={{ p: "0 .5rem"}}>•</Typography>
+								<Typography>{formattedDate}</Typography>
+							</div>
+							<div>
+								<div dangerouslySetInnerHTML={{ __html: message }} />
+							</div>
+						</Box>
+					);
+				})}
 			</Box>
 		</>
 	)
