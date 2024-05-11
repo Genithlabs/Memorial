@@ -75,7 +75,7 @@ export default function Detail({ visitorMessages, memories, detail, memorialId }
 							fontWeight: 'bold',
 						}}
 					>
-						이름
+						{detail.user_name}
 					</Typography>
 					<Typography
 						sx={{
