@@ -20,6 +20,11 @@ export interface Memory {
 	is_visible: number
 	created_at: string
 	updated_at: string
+	attachment: {
+		id: number
+		file_name: string
+		file_path: string
+	}|null
 }
 
 export interface AttachmentProfileImage {
