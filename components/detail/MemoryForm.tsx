@@ -1,21 +1,76 @@
 import TextField from "@mui/material/TextField";
-import {useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import TextAreaCustomized from "@/components/detail/TextAreaCustomized";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import {useSession} from "next-auth/react";
 
-export default function MemoryForm({ onHideForm }: { onHideForm: () => void }) {
+interface MemoryFormProps {
+	onHideForm: () => void
+	memorialId: number
+	setMemories: (memories: []) => void
+}
+
+export default function MemoryForm({ onHideForm, memorialId, setMemories }: MemoryFormProps) {
 	const [selectedFile, setSelectedFile] = useState<string | null>(null);
+	const [title, setTitle] = useState('');
+	const [message, setMessage] = useState('');
+	const [attachment, setAttachment] = useState<File | null>(null);
+	const { data: session } = useSession();
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files && event.target.files[0];
 		if (file) {
 			setSelectedFile(file.name);
-		}
-		if (event.target) {
+			setAttachment(file);
+		} else {
 			event.target.value = '';
+			setAttachment(null);
+		}
+	};
+
+	const handleRegisterStory = async () => {
+		try {
+			if (session) {
+				if (!title) {
+					alert("제목을 입력해주세요.")
+					return false;
+				}
+				if (!message) {
+					alert("메시지를 입력해주세요.")
+					return false;
+				}
+				const url = `${process.env.NEXT_PUBLIC_API_URL}/api/memorial/${memorialId}/story/register`;
+				const formData = new FormData();
+				formData.append('title', title);
+				formData.append('message', message);
+				if (attachment) {
+					formData.append('attachment', attachment);
+				}
+				const response = await fetch(url, {
+					method: "POST",
+					headers: {
+						'Authorization': `Bearer ${session.accessToken}`,
+					},
+					body: formData,
+				});
+				const result = await response.json();
+				if (result.result === "success") {
+					// 새로운 스토리를 기존 스토리 리스트에 추가
+					alert(result.message);
+					setMemories(result.data);
+					onHideForm();
+					setAttachment(null);
+					setTitle('');
+					setMessage('');
+				} else {
+					alert(result.message)
+				}
+			}
+		} catch (error) {
+			console.error("ERROR: ", error);
 		}
 	};
 
@@ -23,16 +78,17 @@ export default function MemoryForm({ onHideForm }: { onHideForm: () => void }) {
 		<>
 			<TextField
 				required
-				id="subject"
-				name="subject"
+				id="title"
+				name="title"
 				label="타이틀"
 				fullWidth
 				variant="standard"
 				sx={{
 					mb: '2rem',
 				}}
+				onChange={(e) => setTitle(e.target.value)}
 			/>
-			<TextAreaCustomized placeholder={"기념하고 싶은 추억, 전하고 싶은 메시지를 남겨보세요"} />
+			<TextAreaCustomized placeholder={"기념하고 싶은 추억, 전하고 싶은 메시지를 남겨보세요"} onChange={e=>setMessage(e.target.value)} value={message} />
 			<Typography sx={{
 				fontSize: '.875rem',
 				mt: '2rem',
@@ -67,7 +123,7 @@ export default function MemoryForm({ onHideForm }: { onHideForm: () => void }) {
 			</Paper>
 			<Box sx={{ textAlign: 'right', mt: '1rem' }}>
 				<Button variant="contained" color="error" sx={{ mr: '.5rem' }} onClick={onHideForm}>취소</Button>
-				<Button variant="contained">게시하기</Button>
+				<Button variant="contained" onClick={handleRegisterStory}>게시하기</Button>
 			</Box>
 		</>
 	)

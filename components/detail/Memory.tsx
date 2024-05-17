@@ -6,8 +6,8 @@ import MemoryForm from "@/components/detail/MemoryForm";
 import Grow from "@mui/material/Grow";
 import {MemoryProps} from "./interfaces";
 
-export default function Memory({ memories, memorialId }: MemoryProps) {
-
+export default function Memory({ memories: initialMemories, memorialId }: MemoryProps) {
+	const [memories, setMemories] = useState(initialMemories);
 	const [showFrom, setShowFormArea] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(true);  // 처음 로드 여부를 확인하는 상태
 
@@ -49,25 +49,35 @@ export default function Memory({ memories, memorialId }: MemoryProps) {
 	                    }}
                           className={"diff-card-section"}
                         >
-							<MemoryForm onHideForm={handleHideForm} />
+							<MemoryForm onHideForm={handleHideForm} memorialId={memorialId} setMemories={setMemories}/>
                         </Box>
                     </Grow>
 			   }
 			</Box>
 			<Box sx={{ mt: "1rem" }}>
-				{memories.map(({created_at, message, user_name}, index) => {
+				{memories.map(({created_at, message, user_name, attachment}, index) => {
 					const date = new Date(created_at);
 					const formattedDate = `${date.getMonth() + 1}월 ${date.getDate()}일`;
 
 					return (
 						<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
 							<div style={{display:"flex"}}>
-								<Typography>{user_name || "이름"}</Typography>
+								<Typography>{user_name ?? '이름'}</Typography>
 								<Typography sx={{ p: "0 .5rem"}}>•</Typography>
 								<Typography>{formattedDate}</Typography>
 							</div>
 							<div>
 								<div dangerouslySetInnerHTML={{ __html: message }} />
+								{attachment && (
+									/\.(jpg|jpeg|png)$/i.test(attachment.file_name) ? (
+										<img src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`} alt="Memory Image" style={{ width: '100%', marginTop: '1rem' }} />
+									) : /\.(mp4|mov)$/i.test(attachment.file_name) ? (
+										<video controls style={{ width: '100%', marginTop: '1rem' }}>
+											<source src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`} type="video/mp4" />
+											Your browser does not support the video tag.
+										</video>
+									) : null
+								)}
 							</div>
 						</Box>
 					);
