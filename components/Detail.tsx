@@ -44,12 +44,10 @@ export default function Detail({ visitorMessages, memories, detail, memorialId }
 						boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
 				}}>
 					{detail?.attachment_profile_image && (
-						<Image
+						<img
 							src={`${process.env.NEXT_PUBLIC_IMAGE}${detail.attachment_profile_image.file_path}${detail.attachment_profile_image.file_name}`}
 							alt="profile image"
-							fill
-							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-							style={{ objectFit: 'cover' }}
+							style={{ width: '100%', height: '100%', position: 'absolute', left: 0, objectFit: 'cover' }}
 						/>
 					)}
 				</Container>
