@@ -48,32 +48,37 @@ export default function Form() {
 	const [memorialId, setMemorialId] = useState("");
 
 	useEffect(() => {
-		const fetchView = async () => {
-			if (session) {
-				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
-					method: 'GET',
-					headers: {
-						'Authorization': `Bearer ${session.accessToken}`
-					},
-				});
-				if (response.ok) {
-					const result = await response.json();
-					if (result.result === 'success' && result.data) {
-						const data = result.data;
-						const updatedBasicInfo = {
-							...basicInfo,
-							user_name: data.name,
-							profile: data.profile_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_profile_image.file_path}${data.attachment_profile_image.file_name}` : '',
-							bgm: data.bgm_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_bgm.file_path}${data.attachment_bgm.file_name}` : ''
-						};
-						setBasicInfo(updatedBasicInfo);
-						setContent(data.career_contents);
-						setMemorialId(data.id);
+		if (!session) {
+			alert('로그인 후 이용 가능합니다.');
+			router.push('/signin');
+		} else {
+			const fetchView = async () => {
+				if (session) {
+					const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer ${session.accessToken}`
+						},
+					});
+					if (response.ok) {
+						const result = await response.json();
+						if (result.result === 'success' && result.data) {
+							const data = result.data;
+							const updatedBasicInfo = {
+								...basicInfo,
+								user_name: data.name,
+								profile: data.profile_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_profile_image.file_path}${data.attachment_profile_image.file_name}` : '',
+								bgm: data.bgm_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_bgm.file_path}${data.attachment_bgm.file_name}` : ''
+							};
+							setBasicInfo(updatedBasicInfo);
+							setContent(data.career_contents);
+							setMemorialId(data.id);
+						}
 					}
 				}
 			}
+			fetchView();
 		}
-		fetchView();
 	}, []);
 
 
