@@ -14,8 +14,8 @@ type BasicProps = {
 		user_name: string;
 		birth_start: string;
 		birth_end: string;
-		profile: File | null;
-		bgm: File | null;
+		profile: File | string | null;
+		bgm: File | string | null;
 	};
 	setBasicInfo: (basicInfo: any) => void;
 };
@@ -29,7 +29,9 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 	const audioRef = useRef<HTMLAudioElement>(null);
 
 	useEffect(() => {
-		if (basicInfo.profile) {
+		if (typeof basicInfo.profile === 'string') {
+			setSelectedImage(basicInfo.profile);
+		} else if (basicInfo.profile) {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				if (e.target) {
@@ -41,7 +43,9 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 	}, [basicInfo.profile]);
 
 	useEffect(() => {
-		if (basicInfo.bgm) {
+		if (typeof basicInfo.bgm === 'string') {
+			setSelectedAudio(basicInfo.bgm);
+		} else if (basicInfo.bgm) {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				if (e.target) {
@@ -57,7 +61,7 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 		if (file) {
 			setBasicInfo({
 				...basicInfo,
-				profile: file
+				profile: file,
 			});
 
 			const reader = new FileReader();
@@ -78,7 +82,7 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 		if (file) {
 			setBasicInfo({
 				...basicInfo,
-				bgm: file
+				bgm: file,
 			});
 
 			const reader = new FileReader();
