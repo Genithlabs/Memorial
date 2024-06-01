@@ -48,37 +48,32 @@ export default function Form() {
 	const [memorialId, setMemorialId] = useState("");
 
 	useEffect(() => {
-		if (!session) {
-			alert('로그인 후 이용 가능합니다.');
-			router.push('/signin');
-		} else {
-			const fetchView = async () => {
-				if (session) {
-					const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
-						method: 'GET',
-						headers: {
-							'Authorization': `Bearer ${session.accessToken}`
-						},
-					});
-					if (response.ok) {
-						const result = await response.json();
-						if (result.result === 'success' && result.data) {
-							const data = result.data;
-							const updatedBasicInfo = {
-								...basicInfo,
-								user_name: data.name,
-								profile: data.profile_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_profile_image.file_path}${data.attachment_profile_image.file_name}` : '',
-								bgm: data.bgm_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_bgm.file_path}${data.attachment_bgm.file_name}` : ''
-							};
-							setBasicInfo(updatedBasicInfo);
-							setContent(data.career_contents);
-							setMemorialId(data.id);
-						}
+		const fetchView = async () => {
+			if (session) {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${session.accessToken}`
+					},
+				});
+				if (response.ok) {
+					const result = await response.json();
+					if (result.result === 'success' && result.data) {
+						const data = result.data;
+						const updatedBasicInfo = {
+							...basicInfo,
+							user_name: data.name,
+							profile: data.profile_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_profile_image.file_path}${data.attachment_profile_image.file_name}` : '',
+							bgm: data.bgm_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_bgm.file_path}${data.attachment_bgm.file_name}` : ''
+						};
+						setBasicInfo(updatedBasicInfo);
+						setContent(data.career_contents);
+						setMemorialId(data.id);
 					}
 				}
 			}
-			fetchView();
 		}
+		fetchView();
 	}, []);
 
 
@@ -140,6 +135,10 @@ export default function Form() {
 		setActiveStep(activeStep - 1);
 	};
 
+	const handleStepClick = (step: number) => {
+		setActiveStep(step);
+	};
+
 	return (
 		<>
 			<Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -148,8 +147,8 @@ export default function Form() {
 						인생 기념관 만들기
 					</Typography>
 					<Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5,  }}>
-						{steps.map((label) => (
-							<Step key={label}>
+						{steps.map((label, index) => (
+							<Step key={label} onClick={() => handleStepClick(index)} completed={false}>
 								<StepLabel>{label}</StepLabel>
 							</Step>
 						))}
