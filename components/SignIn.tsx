@@ -21,7 +21,7 @@ export default function SignIn() {
 
 	useEffect(() => {
 		if (session) {
-			router.push('/');
+			router.push('/form');
 		}
 	}, [session, router]);
 
