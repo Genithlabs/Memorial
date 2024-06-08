@@ -135,6 +135,10 @@ export default function Form() {
 		setActiveStep(activeStep - 1);
 	};
 
+	const handleStepClick = (step: number) => {
+		setActiveStep(step);
+	};
+
 	return (
 		<>
 			<Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -143,8 +147,8 @@ export default function Form() {
 						인생 기념관 만들기
 					</Typography>
 					<Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5,  }}>
-						{steps.map((label) => (
-							<Step key={label}>
+						{steps.map((label, index) => (
+							<Step key={label} onClick={() => handleStepClick(index)} completed={false}>
 								<StepLabel>{label}</StepLabel>
 							</Step>
 						))}
