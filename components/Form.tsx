@@ -74,7 +74,7 @@ export default function Form() {
 			}
 		}
 		fetchView();
-	}, []);
+	}, [session]);
 
 
 	const handleNext = async() => {
