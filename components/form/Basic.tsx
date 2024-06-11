@@ -13,7 +13,7 @@ type BasicProps = {
 	basicInfo: {
 		user_name: string;
 		birth_start: string;
-		birth_end: string;
+		birth_end: string | null;
 		profile: File | string | null;
 		bgm: File | string | null;
 	};
@@ -21,12 +21,17 @@ type BasicProps = {
 };
 
 export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
-	const [selectedStartDate, setSelectedStartDate] = useState(dayjs(basicInfo.birth_start));
-	const [selectedEndDate, setSelectedEndDate] = useState(dayjs(basicInfo.birth_end));
+	const [selectedStartDate, setSelectedStartDate] = useState(dayjs());
+	const [selectedEndDate, setSelectedEndDate] = useState<dayjs.Dayjs | null>(dayjs());
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const audioRef = useRef<HTMLAudioElement>(null);
+
+	useEffect(() => {
+		setSelectedStartDate(dayjs(basicInfo.birth_start));
+		setSelectedEndDate(basicInfo.birth_end ? dayjs(basicInfo.birth_end) : null);
+	}, [basicInfo]);
 
 	useEffect(() => {
 		if (typeof basicInfo.profile === 'string') {
@@ -153,14 +158,15 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 								label="돌아간 생년월일"
 								value={selectedEndDate}
 								onChange={(newValue) => {
-									setSelectedEndDate(dayjs(newValue));
+									setSelectedEndDate(newValue ? dayjs(newValue) : null);
 									setBasicInfo({
 										...basicInfo,
-										birth_end: dayjs(newValue).format('YYYY-MM-DD'),
+										birth_end: newValue ? dayjs(newValue).format('YYYY-MM-DD') : null,
 									});
 								}}
 								format="YYYY-MM-DD"
 								sx={{ width: '100%' }}
+								slotProps={{ textField: { required: false } }}
 							/>
 						</Grid>
 					</Grid>
