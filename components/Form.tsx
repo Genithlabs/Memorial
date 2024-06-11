@@ -39,8 +39,8 @@ export default function Form() {
 	const [activeStep, setActiveStep] = useState(0);
 	const [basicInfo, setBasicInfo] = useState({
 		user_name: '',
-		birth_start: dayjs().format('YYYY-MM-DD'),
-		birth_end: dayjs().format('YYYY-MM-DD'),
+		birth_start: '',
+		birth_end: '',
 		profile: '',
 		bgm: ''
 	});
@@ -61,7 +61,8 @@ export default function Form() {
 					if (result.result === 'success' && result.data) {
 						const data = result.data;
 						const updatedBasicInfo = {
-							...basicInfo,
+							birth_start: data.birth_start,
+							birth_end: data.birth_end,
 							user_name: data.name,
 							profile: data.profile_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_profile_image.file_path}${data.attachment_profile_image.file_name}` : '',
 							bgm: data.bgm_attachment_id ? `${process.env.NEXT_PUBLIC_IMAGE}${data.attachment_bgm.file_path}${data.attachment_bgm.file_name}` : ''
@@ -79,7 +80,7 @@ export default function Form() {
 
 	const handleNext = async() => {
 		if (activeStep === 0) {
-			if (!basicInfo.user_name || !basicInfo.birth_start || !basicInfo.birth_end || !basicInfo.profile ) {
+			if (!basicInfo.user_name || !basicInfo.birth_start || !basicInfo.profile ) {
 				alert("모든 정보를 입력해 주세요.");
 				return;
 			}
@@ -95,9 +96,13 @@ export default function Form() {
 			const formData = new FormData();
 			formData.append('user_name', basicInfo.user_name);
 			formData.append('birth_start', basicInfo.birth_start ? basicInfo.birth_start : dayjs().format('YYYY-MM-DD'));
-			formData.append('birth_end', basicInfo.birth_end ? basicInfo.birth_end : dayjs().format('YYYY-MM-DD'));
+			if (basicInfo.birth_end) {
+				formData.append('birth_end', basicInfo.birth_end);
+			}
 			formData.append('profile',typeof basicInfo.profile === "object" ? basicInfo.profile : "");
-			formData.append('bgm', basicInfo.bgm);
+			if (basicInfo.bgm) {
+				formData.append('bgm', basicInfo.bgm);
+			}
 			formData.append('career', content);
 
 			const url = `${memorialId ? 
@@ -113,10 +118,13 @@ export default function Form() {
 						},
 						body: formData,
 					});
-					if (!response.ok) {
-						throw new Error('ERROR!!');
+					const result = await response.json();
+					if (!response.ok || result.result === 'fail') {
+						const errorMessage = result.message ?
+							(Array.isArray(result.message) ? result.message.join(', ') : result.message)
+							: 'ERROR!!';
+						alert(`ERROR: ${errorMessage}`);
 					} else {
-						const result = await response.json();
 						if (result.data) {
 							setMemorialId(result.data.id);
 						}
@@ -126,7 +134,7 @@ export default function Form() {
 					console.error('Session is null');
 				}
 			} catch (error) {
-				console.error(error);
+				console.log(error);
 			}
 		}
 	};

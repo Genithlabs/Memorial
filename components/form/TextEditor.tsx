@@ -29,6 +29,10 @@ function TextEditor({ content, setContent }: ContentProps) {
 				},
 			});
 
+			if (content) {
+				quill.clipboard.dangerouslyPasteHTML(content);
+			}
+
 			const imageHandler = () => {
 				const input = document.createElement('input');
 				input.setAttribute('type', 'file');
