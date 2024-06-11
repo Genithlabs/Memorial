@@ -113,10 +113,13 @@ export default function Form() {
 						},
 						body: formData,
 					});
-					if (!response.ok) {
-						throw new Error('ERROR!!');
+					const result = await response.json();
+					if (!response.ok || result.result === 'fail') {
+						const errorMessage = result.message ?
+							(Array.isArray(result.message) ? result.message.join(', ') : result.message)
+							: 'ERROR!!';
+						alert(`ERROR: ${errorMessage}`);
 					} else {
-						const result = await response.json();
 						if (result.data) {
 							setMemorialId(result.data.id);
 						}
@@ -126,7 +129,7 @@ export default function Form() {
 					console.error('Session is null');
 				}
 			} catch (error) {
-				console.error(error);
+				console.log(error);
 			}
 		}
 	};
