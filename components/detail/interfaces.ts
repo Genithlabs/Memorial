@@ -69,12 +69,14 @@ export interface ALLProps {
 	detail: Detail
 	memorialId: number
 	setMemories: any
+	setVisitorMessages: any
 }
 
 export interface LifeProps {
 	visitorMessages: VisitorMessage[]
 	detail: Detail
 	memorialId: number
+	setVisitorMessages: any
 }
 
 export interface MemoryProps {

@@ -13,13 +13,14 @@ const getYearFromDate = (dateStr: string): string => {
 	return date.getFullYear().toString();
 }
 
-export default function Detail({ visitorMessages, memories: initialMemories, detail, memorialId }: ALLProps) {
+export default function Detail({ visitorMessages: initialVisitorMessages, memories: initialMemories, detail, memorialId }: ALLProps) {
 	// Extract only the year from birth_start and birth_end
 	const birthStartYear = getYearFromDate(detail.birth_start);
 	const birthEndYear = detail.birth_end ? getYearFromDate(detail.birth_end) : '';
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 	const [memories, setMemories] = useState(initialMemories);
+	const [visitorMessages, setVisitorMessages] = useState(initialVisitorMessages);
 
 	useEffect(() => {
 		if (detail.attachment_bgm) {
@@ -137,7 +138,7 @@ export default function Detail({ visitorMessages, memories: initialMemories, det
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
-					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail} memorialId={memorialId} setMemories={setMemories}/>
+					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail} memorialId={memorialId} setMemories={setMemories} setVisitorMessages={setVisitorMessages}/>
 				</Container>
 			</main>
 		</>
