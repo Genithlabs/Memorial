@@ -16,7 +16,7 @@ const getYearFromDate = (dateStr: string): string => {
 export default function Detail({ visitorMessages, memories, detail, memorialId }: ALLProps) {
 	// Extract only the year from birth_start and birth_end
 	const birthStartYear = getYearFromDate(detail.birth_start);
-	const birthEndYear = getYearFromDate(detail.birth_end);
+	const birthEndYear = detail.birth_end ? getYearFromDate(detail.birth_end) : '';
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
@@ -132,7 +132,7 @@ export default function Detail({ visitorMessages, memories, detail, memorialId }
 							fontWeight: '400',
 						}}
 					>
-						{birthStartYear} - {birthEndYear}
+						{birthEndYear ? `${birthStartYear} ~ ${birthEndYear}` : birthStartYear}
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
