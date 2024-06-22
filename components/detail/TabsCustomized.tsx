@@ -9,7 +9,7 @@ import Memory from "./Memory";
 import { ALLProps } from './interfaces';
 
 
-export default function TabsCustomized({ visitorMessages, memories, detail, memorialId }: ALLProps) {
+export default function TabsCustomized({ visitorMessages, memories, detail, memorialId, setMemories}: ALLProps) {
 	return (
 		<Tabs defaultValue={1}>
 			<StyledTabsList>
@@ -17,7 +17,7 @@ export default function TabsCustomized({ visitorMessages, memories, detail, memo
 				<StyledTab value={2}>추억과 메모리<br/>Memory And Message</StyledTab>
 			</StyledTabsList>
 			<StyledTabPanel value={1}><Life visitorMessages={visitorMessages} detail={detail} memorialId={memorialId} /></StyledTabPanel>
-			<StyledTabPanel value={2}><Memory memories={memories} memorialId={memorialId} /></StyledTabPanel>
+			<StyledTabPanel value={2}><Memory memories={memories} memorialId={memorialId} setMemories={setMemories} /></StyledTabPanel>
 		</Tabs>
 	);
 }

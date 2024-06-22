@@ -6,8 +6,8 @@ import MemoryForm from "@/components/detail/MemoryForm";
 import Grow from "@mui/material/Grow";
 import {MemoryProps} from "./interfaces";
 
-export default function Memory({ memories: initialMemories, memorialId }: MemoryProps) {
-	const [memories, setMemories] = useState(initialMemories);
+export default function Memory({ memories: initialMemories, memorialId, setMemories }: MemoryProps) {
+	const [memories, setMemoriesState] = useState(initialMemories);
 	const [showFrom, setShowFormArea] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(true);  // 처음 로드 여부를 확인하는 상태
 
@@ -39,20 +39,20 @@ export default function Memory({ memories: initialMemories, memorialId }: Memory
                     </Grow>
 				}
 				{showFrom &&
-                    <Grow in={showFrom}
-                          style={{ transformOrigin: '0 0 0' }}
-					      {...(showFrom ? { timeout: 200 } : {})}
-                    >
-                        <Box sx={{
-		                    p: '1rem',
-		                    width: '100%',
-	                    }}
-                          className={"diff-card-section"}
-                        >
-							<MemoryForm onHideForm={handleHideForm} memorialId={memorialId} setMemories={setMemories}/>
-                        </Box>
-                    </Grow>
-			   }
+					<Grow in={showFrom}
+						  style={{ transformOrigin: '0 0 0' }}
+						  {...(showFrom ? { timeout: 200 } : {})}
+					>
+						<Box sx={{
+							p: '1rem',
+							width: '100%',
+						}}
+							 className={"diff-card-section"}
+						>
+							<MemoryForm onHideForm={handleHideForm} memorialId={memorialId} setMemories={(newMemories) => { setMemoriesState(newMemories); setMemories(newMemories); }} />
+						</Box>
+					</Grow>
+				}
 			</Box>
 			<Box sx={{ mt: "1rem" }}>
 				{memories.map(({created_at, message, user_name, attachment}, index) => {

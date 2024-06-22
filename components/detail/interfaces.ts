@@ -68,6 +68,7 @@ export interface ALLProps {
 	memories: Memory[]
 	detail: Detail
 	memorialId: number
+	setMemories: any
 }
 
 export interface LifeProps {
@@ -79,4 +80,5 @@ export interface LifeProps {
 export interface MemoryProps {
 	memories: Memory[]
 	memorialId: number
+	setMemories: any
 }
