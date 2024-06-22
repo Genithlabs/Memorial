@@ -77,6 +77,10 @@ export default function Form() {
 		fetchView();
 	}, [session]);
 
+	const isFile = (value: any): value is File => {
+		return value instanceof File;
+	};
+
 
 	const handleNext = async() => {
 		if (activeStep === 0) {
@@ -99,8 +103,10 @@ export default function Form() {
 			if (basicInfo.birth_end) {
 				formData.append('birth_end', basicInfo.birth_end);
 			}
-			formData.append('profile',typeof basicInfo.profile === "object" ? basicInfo.profile : "");
-			if (basicInfo.bgm) {
+			if (basicInfo.profile && isFile(basicInfo.profile)) {
+				formData.append('profile', basicInfo.profile);
+			}
+			if (basicInfo.bgm && isFile(basicInfo.bgm)) {
 				formData.append('bgm', basicInfo.bgm);
 			}
 			formData.append('career', content);
