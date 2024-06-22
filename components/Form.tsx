@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { useRouter } from 'next/router';
 import Basic from "../components/form/Basic";
 import Birth from "../components/form/Birth";
@@ -46,10 +46,11 @@ export default function Form() {
 	});
 	const [content, setContent] = useState("");
 	const [memorialId, setMemorialId] = useState("");
+	const dataFetchedRef = useRef(false);
 
 	useEffect(() => {
 		const fetchView = async () => {
-			if (session) {
+			if (session && !dataFetchedRef.current) {
 				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
 					method: 'GET',
 					headers: {
@@ -70,6 +71,7 @@ export default function Form() {
 						setBasicInfo(updatedBasicInfo);
 						setContent(data.career_contents);
 						setMemorialId(data.id);
+						dataFetchedRef.current = true;
 					}
 				}
 			}
