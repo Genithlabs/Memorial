@@ -46,7 +46,7 @@ export default function Detail({ visitorMessages, memories, detail, memorialId }
 		<>
 			<main>
 				<div style={{ position: 'relative', width: '100%', height: '20rem'}}>
-					<Image src="/cloud2.png" alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
+					<Image src="/cloud3.png" alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
 					{detail.attachment_bgm && (
 						<IconButton
 							onClick={togglePlay}
