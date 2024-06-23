@@ -92,18 +92,20 @@ export default function Main({memorialCards}: MainProps) {
 					<Grid container spacing={4}>
 						{memorialCards.map((card) => (
 							<Grid item key={card.id} xs={12} sm={6} md={3}>
-								<Card
-									sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-								>
-									<CardMedia
-										component="div"
-										sx={{
-											// 16:9
-											pt: '56.25%',
-										}}
-										image={card.attachment_profile_image ? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}` : "https://source.unsplash.com/random?wallpapers"}
-									/>
-								</Card>
+								<NextLink href={`/detail/${card.id}`} passHref>
+									<Card
+										sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+									>
+										<CardMedia
+											component="div"
+											sx={{
+												// 16:9
+												pt: '56.25%',
+											}}
+											image={card.attachment_profile_image ? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}` : "https://source.unsplash.com/random?wallpapers"}
+										/>
+									</Card>
+								</NextLink>
 							</Grid>
 						))}
 					</Grid>
