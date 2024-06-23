@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 		const formattedDetail = {
 			id: detail.id,
-			user_name: detail.user_name,
+			user_name: detail.name,
 			birth_start: detail.birth_start,
 			birth_end: detail.birth_end,
 			career_contents: detail.career_contents,
