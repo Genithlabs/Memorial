@@ -8,8 +8,8 @@ import Grow from "@mui/material/Grow";
 import { LifeProps } from "./interfaces";
 import { useSession } from "next-auth/react";
 
-export default function Life({ visitorMessages: initialVisitorMessages, detail, memorialId }: LifeProps) {
-	const [visitorMessages, setVisitorMessages] = useState(initialVisitorMessages);
+export default function Life({ visitorMessages: initialVisitorMessages, detail, memorialId, setVisitorMessages }: LifeProps) {
+	const [visitorMessages, setVisitorMessagesState] = useState(initialVisitorMessages);
 	const { data: session } = useSession();
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [message, setMessage] = useState("");
@@ -39,6 +39,7 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 				if (result.result === "success") {
 					// 새로운 코멘트를 기존 메시지 리스트에 추가
 					setVisitorMessages([...result.data]);
+					setVisitorMessagesState([...result.data]);
 					setMessage("");
 				}
 			}

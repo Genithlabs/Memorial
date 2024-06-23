@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { useRouter } from 'next/router';
 import Basic from "../components/form/Basic";
 import Birth from "../components/form/Birth";
@@ -46,10 +46,11 @@ export default function Form() {
 	});
 	const [content, setContent] = useState("");
 	const [memorialId, setMemorialId] = useState("");
+	const dataFetchedRef = useRef(false);
 
 	useEffect(() => {
 		const fetchView = async () => {
-			if (session) {
+			if (session && !dataFetchedRef.current) {
 				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
 					method: 'GET',
 					headers: {
@@ -70,12 +71,17 @@ export default function Form() {
 						setBasicInfo(updatedBasicInfo);
 						setContent(data.career_contents);
 						setMemorialId(data.id);
+						dataFetchedRef.current = true;
 					}
 				}
 			}
 		}
 		fetchView();
 	}, [session]);
+
+	const isFile = (value: any): value is File => {
+		return value instanceof File;
+	};
 
 
 	const handleNext = async() => {
@@ -99,8 +105,10 @@ export default function Form() {
 			if (basicInfo.birth_end) {
 				formData.append('birth_end', basicInfo.birth_end);
 			}
-			formData.append('profile',typeof basicInfo.profile === "object" ? basicInfo.profile : "");
-			if (basicInfo.bgm) {
+			if (basicInfo.profile && isFile(basicInfo.profile)) {
+				formData.append('profile', basicInfo.profile);
+			}
+			if (basicInfo.bgm && isFile(basicInfo.bgm)) {
 				formData.append('bgm', basicInfo.bgm);
 			}
 			formData.append('career', content);

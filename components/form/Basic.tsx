@@ -197,7 +197,7 @@ export default function Basic({ basicInfo, setBasicInfo }: BasicProps) {
 						)}
 						{selectedImage && (
 							<>
-								<Image src={selectedImage} alt="Selected" width={100} height={100} onClick={() => inputRef.current && inputRef.current.click()} />
+								<img src={selectedImage} alt="Selected" width="100" height="100" onClick={() => inputRef.current && inputRef.current.click()} />
 								<Button variant="text" onClick={() => setSelectedImage(null)} style={{ position: 'absolute', top: 0, right: 0 }} color="inherit">
 									x
 								</Button>

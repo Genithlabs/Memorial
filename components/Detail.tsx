@@ -3,22 +3,71 @@ import Image from "next/image";
 import Container from "@mui/material/Container";
 import TabsCustomized from './detail/TabsCustomized';
 import {ALLProps} from './detail/interfaces';
-
+import {IconButton} from "@mui/material";
+import {useEffect, useState} from "react";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 
 const getYearFromDate = (dateStr: string): string => {
 	const date = new Date(dateStr);
 	return date.getFullYear().toString();
 }
 
-export default function Detail({ visitorMessages, memories, detail, memorialId }: ALLProps) {
+export default function Detail({ visitorMessages: initialVisitorMessages, memories: initialMemories, detail, memorialId }: ALLProps) {
 	// Extract only the year from birth_start and birth_end
 	const birthStartYear = getYearFromDate(detail.birth_start);
-	const birthEndYear = getYearFromDate(detail.birth_end);
+	const birthEndYear = detail.birth_end ? getYearFromDate(detail.birth_end) : '';
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+	const [memories, setMemories] = useState(initialMemories);
+	const [visitorMessages, setVisitorMessages] = useState(initialVisitorMessages);
+
+	useEffect(() => {
+		if (detail.attachment_bgm) {
+			const audioElement = new Audio(`${process.env.NEXT_PUBLIC_IMAGE}${detail.attachment_bgm.file_path}${detail.attachment_bgm.file_name}`);
+			audioElement.addEventListener('ended', () => {
+				audioElement.currentTime = 0;
+				audioElement.play();
+			});
+			setAudio(audioElement);
+		}
+	}, [detail.attachment_bgm]);
+
+	const togglePlay = () => {
+		if (audio) {
+			if (isPlaying) {
+				audio.pause();
+			} else {
+				audio.play();
+			}
+			setIsPlaying(!isPlaying);
+		}
+	};
+
 	return (
 		<>
 			<main>
 				<div style={{ position: 'relative', width: '100%', height: '20rem'}}>
-					<Image src="/cloud2.png" alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
+					<Image src="/cloud3.png" alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
+					{detail.attachment_bgm && (
+						<IconButton
+							onClick={togglePlay}
+							sx={{
+								position: 'absolute',
+								top: '50%',
+								left: '50%',
+								transform: 'translate(-50%, -50%)',
+								color: 'black',
+								backgroundColor: 'rgba(255, 255, 255, 0.8)',
+								borderRadius: '50%',
+								'&:hover': {
+									backgroundColor: 'rgba(255, 255, 255, 1)',
+								},
+							}}
+						>
+							{isPlaying ? <PauseIcon sx={{ fontSize: 40 }} /> : <PlayArrowIcon sx={{ fontSize: 40 }} />}
+						</IconButton>
+					)}
 				</div>
 				<Container
 					sx={{
@@ -85,11 +134,11 @@ export default function Detail({ visitorMessages, memories, detail, memorialId }
 							fontWeight: '400',
 						}}
 					>
-						{birthStartYear} - {birthEndYear}
+						{birthEndYear ? `${birthStartYear} ~ ${birthEndYear}` : birthStartYear}
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
-					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail} memorialId={memorialId}/>
+					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail} memorialId={memorialId} setMemories={setMemories} setVisitorMessages={setVisitorMessages}/>
 				</Container>
 			</main>
 		</>
