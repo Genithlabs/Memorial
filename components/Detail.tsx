@@ -10,13 +10,13 @@ import PauseIcon from '@mui/icons-material/Pause';
 
 const getYearFromDate = (dateStr: string): string => {
 	const date = new Date(dateStr);
-	return date.getFullYear().toString();
+	return `${date.getFullYear().toString()}. ${date.getMonth()+1}`;
 }
 
 export default function Detail({ visitorMessages: initialVisitorMessages, memories: initialMemories, detail, memorialId }: ALLProps) {
 	// Extract only the year from birth_start and birth_end
-	const birthStartYear = getYearFromDate(detail.birth_start);
-	const birthEndYear = detail.birth_end ? getYearFromDate(detail.birth_end) : '';
+	const birthStart = getYearFromDate(detail.birth_start);
+	const birthEnd = detail.birth_end ? getYearFromDate(detail.birth_end) : '';
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 	const [memories, setMemories] = useState(initialMemories);
@@ -143,7 +143,7 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 							fontWeight: '400',
 						}}
 					>
-						{birthEndYear ? `${birthStartYear} ~ ${birthEndYear}` : birthStartYear}
+						{birthEnd ? `${birthStart} ~ ${birthStart}` : birthStart}
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
