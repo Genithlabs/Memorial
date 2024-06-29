@@ -23,14 +23,23 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 	const [visitorMessages, setVisitorMessages] = useState(initialVisitorMessages);
 
 	useEffect(() => {
+		let audioElement: HTMLAudioElement | null = null;
 		if (detail.attachment_bgm) {
-			const audioElement = new Audio(`${process.env.NEXT_PUBLIC_IMAGE}${detail.attachment_bgm.file_path}${detail.attachment_bgm.file_name}`);
+			audioElement = new Audio(`${process.env.NEXT_PUBLIC_IMAGE}${detail.attachment_bgm.file_path}${detail.attachment_bgm.file_name}`);
 			audioElement.addEventListener('ended', () => {
-				audioElement.currentTime = 0;
-				audioElement.play();
+				if (audioElement) {
+					audioElement.currentTime = 0;
+					audioElement.play();
+				}
 			});
 			setAudio(audioElement);
 		}
+		return () => {
+			if (audioElement) {
+				audioElement.pause();
+				audioElement = null;
+			}
+		};
 	}, [detail.attachment_bgm]);
 
 	const togglePlay = () => {
