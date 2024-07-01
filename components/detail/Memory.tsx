@@ -70,11 +70,24 @@ export default function Memory({ memories: initialMemories, memorialId, setMemor
 								<div dangerouslySetInnerHTML={{ __html: message }} />
 								{attachment && (
 									/\.(jpg|jpeg|png)$/i.test(attachment.file_name) ? (
-										<img src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`} alt="Memory Image" style={{ width: '100%', marginTop: '1rem' }} />
+										<img
+											src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
+											alt="Memory Image"
+											style={{ width: '100%', marginTop: '1rem' }}
+										/>
 									) : /\.(mp4|mov)$/i.test(attachment.file_name) ? (
 										<video controls style={{ width: '100%', marginTop: '1rem' }}>
-											<source src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`} type="video/mp4" />
-											Your browser does not support the video tag.
+											<source
+												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
+												type="video/mp4"
+											/>
+										</video>
+									) : /\.(mp3)$/i.test(attachment.file_name) ? (
+										<video controls style={{ width: '100%', marginTop: '1rem', height: '60px' }}>
+											<source
+												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
+												type="audio/mp3"
+											/>
 										</video>
 									) : null
 								)}
