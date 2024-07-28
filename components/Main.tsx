@@ -21,6 +21,8 @@ import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 
 const NextArrow = (props: any) => {
 	const { className, style, onClick } = props;
+	const theme = useTheme();
+	const color = theme.palette.mode === 'dark' ? 'white' : 'black';
 	return (
 		<div
 			className={className}
@@ -35,13 +37,15 @@ const NextArrow = (props: any) => {
 			}}
 			onClick={onClick}
 		>
-			<ArrowForwardIos style={{ fontSize: '2rem', color: 'black' }} />
+			<ArrowForwardIos style={{ fontSize: '2rem', color }} />
 		</div>
 	);
 };
 
 const PrevArrow = (props: any) => {
 	const { className, style, onClick } = props;
+	const theme = useTheme();
+	const color = theme.palette.mode === 'dark' ? 'white' : 'black';
 	return (
 		<div
 			className={className}
@@ -56,7 +60,7 @@ const PrevArrow = (props: any) => {
 			}}
 			onClick={onClick}
 		>
-			<ArrowBackIos style={{ fontSize: '2rem', color: 'black' }} />
+			<ArrowBackIos style={{ fontSize: '2rem', color }} />
 		</div>
 	);
 };
@@ -69,7 +73,7 @@ export default function Main({ memorialCards }: MainProps) {
 
 	const settings = {
 		dots: false,
-		infinite: true,
+		infinite: false,
 		speed: 500,
 		slidesToShow: 4,
 		slidesToScroll: 4,
