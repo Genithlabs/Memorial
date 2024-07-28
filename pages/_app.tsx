@@ -21,20 +21,21 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
     useEffect(() => {
+      if (process.env.APP_ENV_VALUE !== 'local') {
         const handleRouteChange = (url: string) => {
-            if (analytics) {
-                logEvent(analytics, 'page_view', {
-                    page_path: url,
-                });
-            }
+          if (analytics) {
+            logEvent(analytics, 'page_view', {
+              page_path: url,
+            });
+          }
         };
 
         router.events.on("routeChangeComplete", handleRouteChange);
-        handleRouteChange(window.location.pathname);
-
-        return () => {
-            router.events.off("routeChangeComplete", handleRouteChange);
-        };
+          handleRouteChange(window.location.pathname);
+            return () => {
+              router.events.off("routeChangeComplete", handleRouteChange);
+            };
+        }
     }, [router.events]);
 
   const theme = makeTheme(mode);
