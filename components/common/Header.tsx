@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function Header() {
 	const { data: session, status } = useSession();
@@ -22,7 +23,7 @@ export default function Header() {
 				</Link>
 				<div style={{ marginLeft: 'auto' }}>
 					{status === "authenticated" ? (
-						<Button color="inherit" onClick={() => signOut({ callbackUrl: '/' })}>로그아웃</Button>
+						<LogoutButton />
 					) : (
 						<Link href="/signin" passHref>
 							<Button color="inherit">로그인</Button>
