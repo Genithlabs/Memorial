@@ -85,7 +85,7 @@ export default function Main({ memorialCards }: MainProps) {
 				settings: {
 					slidesToShow: 3,
 					slidesToScroll: 3,
-					infinite: true,
+					infinite: false,
 					dots: false
 				}
 			},
@@ -189,7 +189,7 @@ export default function Main({ memorialCards }: MainProps) {
 						기념관 리스트
 					</Typography>
 					{/* End hero unit */}
-					{isDesktop ? (
+					{isDesktop && memorialCards.length > 4 ? (
 						<Slider {...settings}>
 							{memorialCards.map((card) => (
 								<Box key={card.id} sx={{ px: 2 }}>
@@ -210,7 +210,7 @@ export default function Main({ memorialCards }: MainProps) {
 							))}
 						</Slider>
 					) : (
-						<Grid container spacing={4}>
+						<Grid container spacing={4} justifyContent="center">
 							{memorialCards.map((card) => (
 								<Grid item key={card.id} xs={12} sm={6} md={3}>
 									<NextLink href={`/detail/${card.id}`} passHref>
