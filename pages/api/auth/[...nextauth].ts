@@ -57,4 +57,7 @@ export default NextAuth({
 			return session;
 		}
 	},
+	pages: {
+		signOut: '/', // 로그아웃 후 리디렉션할 URL 설정
+	}
 })
