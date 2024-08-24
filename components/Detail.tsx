@@ -10,7 +10,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 
 const getYearFromDate = (dateStr: string): string => {
 	const date = new Date(dateStr);
-	return `${date.getFullYear().toString()}. ${date.getMonth()+1}`;
+	return `${date.getFullYear().toString()}. ${date.getMonth() + 1}. ${date.getDate()}`;
 }
 
 export default function Detail({ visitorMessages: initialVisitorMessages, memories: initialMemories, detail, memorialId }: ALLProps) {
@@ -143,7 +143,7 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 							fontWeight: '400',
 						}}
 					>
-						{birthEnd ? `${birthStart} ~ ${birthStart}` : birthStart}
+						{birthEnd ? `${birthStart} ~ ${birthStart}` : `${birthStart} ~`}
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
