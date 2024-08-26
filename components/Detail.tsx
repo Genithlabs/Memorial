@@ -26,12 +26,16 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 		let audioElement: HTMLAudioElement | null = null;
 		if (detail.attachment_bgm) {
 			audioElement = new Audio(`${process.env.NEXT_PUBLIC_IMAGE}${detail.attachment_bgm.file_path}${detail.attachment_bgm.file_name}`);
+
 			audioElement.addEventListener('ended', () => {
 				if (audioElement) {
 					audioElement.currentTime = 0;
 					audioElement.play();
 				}
 			});
+
+			audioElement.play(); // 자동으로 재생 시작
+			setIsPlaying(true);
 			setAudio(audioElement);
 		}
 		return () => {
@@ -143,7 +147,7 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 							fontWeight: '400',
 						}}
 					>
-						{birthEnd ? `${birthStart} ~ ${birthStart}` : `${birthStart} ~`}
+						{birthEnd ? `${birthStart} ~ ${birthEnd}` : `${birthStart} ~`}
 					</Typography>
 				</Container>
 				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
