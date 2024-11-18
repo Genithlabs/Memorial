@@ -157,10 +157,14 @@ export default function Form() {
 					}
 				}
 			} else {
-				console.error('Session is null');
+				alert('로그인 후 이용해주세요.');
 			}
 		} catch (error) {
-			console.log(error);
+			if (error instanceof Error) {
+				alert(`에러 발생: ${error.message}`);
+			} else {
+				alert('에러 발생');
+			}
 		}
 	};
 
