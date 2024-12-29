@@ -31,9 +31,7 @@ export default function Header() {
 					{status === "authenticated" ? (
 						<LogoutButton />
 					) : (
-						<Link href="/signin" passHref>
-							<Button color="inherit">로그인</Button>
-						</Link>
+						<Link href="/signin" passHref>로그인</Link>
 					)}
 				</div>
 			</Toolbar>
