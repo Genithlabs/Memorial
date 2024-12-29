@@ -1,6 +1,6 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Button from "@mui/material/Button";
+import Link from "next/link";
 
 const LogoutButton = () => {
 	const router = useRouter();
@@ -11,9 +11,9 @@ const LogoutButton = () => {
 	};
 
 	return (
-		<Button color="inherit" onClick={handleSignOut}>
+		<a href="#" onClick={handleSignOut}>
 			로그아웃
-		</Button>
+		</a>
 	);
 };
 

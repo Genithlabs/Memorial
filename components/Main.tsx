@@ -137,56 +137,76 @@ export default function Main({ memorialCards }: MainProps) {
 								sm: '2.5rem',
 								md: '4rem'
 							},
-							fontWeight: 300
+							fontWeight: 300,
+							fontFamily: "'Grandiflora One', sans-serif",
 						}}
 					>
-						기념관 만들기!
+						평범한 우리들의 인생은<br/>갑작스레 끝나고,<br/>덧없이 흩어지게 될까요?
 					</Typography>
 					<Typography
 						align="center"
-						color="text.secondary"
+						color="text.primary"
 						paragraph
 						sx={{
 							fontSize: {
-								xs: '.9rem',
-								sm: '1.5rem',
-								md: '2rem'
+								xs: '.7rem',
+								sm: '1rem',
+								md: '1.5rem'
 							},
 						}}
 					>
-						위인들만 기념관을 만들 수 있는 것은 아닙니다.<br />
-						여러분 혹은 여러분이 사랑하는 사람의 기념관을 만들어보세요
+						나의 삶, 사랑하는 이의 삶을 영원히 기억할 기념관을 만들어보세요
 					</Typography>
 					<Stack
 						sx={{ pt: 4 }}
 						direction="row"
-						spacing={2}
 						justifyContent="center"
 					>
 						<NextLink href={redirectUrl} passHref>
-							<Button variant="contained">새로 기념관 건립</Button>
-						</NextLink>
-						<NextLink href={redirectUrl} passHref>
-							<Button variant="outlined">내가 건립한 기념관 수정</Button>
+							<Button
+								variant="contained"
+								sx={{
+									backgroundColor: 'black',
+									color: 'white',
+									fontSize: '1.2rem', // 글씨 크기 증가
+									padding: '12px 24px', // 상하좌우 여백
+									minWidth: '200px', // 버튼 최소 너비
+									height: '60px', // 버튼 높이
+									'&:hover': {
+										backgroundColor: '#333', // 호버 시 배경색
+									},
+									fontFamily: "Inter"
+								}}
+							>
+								기념관 만들기
+							</Button>
 						</NextLink>
 					</Stack>
 				</Container>
 			</Box>
-			<Box className={"main-diff-card-section"}>
+			<Box
+				sx={{
+					bgcolor: 'background.paper',
+					pt: 8,
+					pb: 6,
+				}}
+			>
 				<Container sx={{ py: 8 }} maxWidth="md">
 					<Typography
 						align="center"
-						gutterBottom
 						sx={{
 							fontSize: {
 								xs: '2rem',
 								sm: '2rem',
-								md: '3.5rem'
+								md: '2rem'
 							},
-							fontWeight: 300
+							fontWeight: 300,
+							fontColor: 'black',
+							marginTop: "1rem",
+							marginBottom: "33px",
 						}}
 					>
-						기념관 리스트
+						다른 기념관 들러보기
 					</Typography>
 					{/* End hero unit */}
 					{isDesktop && memorialCards.length > 4 ? (
@@ -195,7 +215,7 @@ export default function Main({ memorialCards }: MainProps) {
 								<Box key={card.id} sx={{ px: 2 }}>
 									<NextLink href={`/detail/${card.id}`} passHref>
 										<Card
-											sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+											sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: "90%"}}
 										>
 											<CardMedia
 												component="div"
@@ -215,7 +235,7 @@ export default function Main({ memorialCards }: MainProps) {
 								<Grid item key={card.id} xs={12} sm={6} md={3}>
 									<NextLink href={`/detail/${card.id}`} passHref>
 										<Card
-											sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+											sx={{ height: '100%', display: 'flex', flexDirection: 'column', }}
 										>
 											<CardMedia
 												component="div"
@@ -242,46 +262,7 @@ export default function Main({ memorialCards }: MainProps) {
 				<Container maxWidth="md">
 					<Typography
 						align="center"
-						gutterBottom
-						sx={{
-							fontSize: {
-								xs: '1.7rem',
-								sm: '2.5rem',
-								md: '3.5rem'
-							},
-							fontWeight: 300
-						}}
-					>
-						인생 기념관 프로젝트를 시작하며
-					</Typography>
-					<Box
-						sx={{
-							display: 'flex',
-							justifyContent: 'center',
-						}}>
-						<Card
-							sx={{ my: 4, width: '30%', display: 'flex', flexDirection: 'column' }}
-						>
-							<CardMedia
-								component="div"
-								sx={{
-									pt: '75%'
-								}}
-								image="https://source.unsplash.com/random?wallpapers"
-							/>
-							<CardContent>
-								<Typography variant="h5" align="center" component="div">
-									전경자
-								</Typography>
-								<Typography variant="subtitle2" align="center" color="textSecondary">
-									설립자
-								</Typography>
-							</CardContent>
-						</Card>
-					</Box>
-					<Typography
-						align="center"
-						color="text.secondary"
+						color="text.primary"
 						paragraph
 						sx={{
 							fontSize: {
@@ -291,8 +272,28 @@ export default function Main({ memorialCards }: MainProps) {
 							},
 						}}
 					>
-						위인들만 기념관을 만들 수 있는 것은 아닙니다.<br />
-						여러분 혹은 여러분이 사랑하는 사람의 기념관을 만들어보세요
+						위인들만 기념관을 만들 수 있는 것은 아니에요<br/>기억할 사람들을 위해 기념관을 만들어보세요
+					</Typography>
+					<Typography align="center" sx={{marginTop: "33px"}}>
+						<NextLink href="" passHref>
+							<Button
+								variant="contained"
+								sx={{
+									backgroundColor: 'black',
+									color: 'white',
+									fontSize: '1.2rem', // 글씨 크기 증가
+									padding: '12px 24px', // 상하좌우 여백
+									minWidth: '200px', // 버튼 최소 너비
+									height: '60px', // 버튼 높이
+									'&:hover': {
+										backgroundColor: '#333', // 호버 시 배경색
+									},
+									fontFamily: "Inter"
+								}}
+							>
+								새 기념관 만들기
+							</Button>
+						</NextLink>
 					</Typography>
 				</Container>
 			</Box>

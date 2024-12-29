@@ -11,7 +11,13 @@ export default function Header() {
 	const { data: session, status } = useSession();
 
 	return (
-		<AppBar position="relative">
+		<AppBar position="relative"
+			sx={{
+				backgroundColor: "white",
+				boxShadow: "none",
+				color: "black",
+			}}
+		>
 			<Toolbar>
 				<Link href="/" passHref>
 					<span style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>

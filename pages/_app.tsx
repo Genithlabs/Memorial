@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import '@/styles/globals.css';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { makeTheme } from '@/utils/theme';
 import Footer from '../components/common/Footer';
@@ -12,15 +12,7 @@ import { analytics } from '@/firebase';
 import { logEvent } from 'firebase/analytics';
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
   const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setMode(prefersDarkMode ? 'dark' : 'light');
-    }
-  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.APP_ENV_VALUE !== 'local') {
@@ -40,7 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [router.events]);
 
-  const theme = makeTheme(mode);
+  const theme = makeTheme('light');
 
   return (
       <SessionProvider session={pageProps.session}>
