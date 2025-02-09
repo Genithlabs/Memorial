@@ -7,6 +7,7 @@ import {IconButton} from "@mui/material";
 import {useEffect, useState} from "react";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import Box from "@mui/material/Box";
 
 const getYearFromDate = (dateStr: string): string => {
 	const date = new Date(dateStr);
@@ -60,8 +61,28 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 	return (
 		<>
 			<main>
-				<div style={{ position: 'relative', width: '100%', height: '20rem'}}>
-					<Image src="/cloud3.png" alt="background image" fill sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw" style={{ objectFit: 'cover' }}/>
+				<div style={{position: 'relative', width: '100%', height: '20rem'}}>
+					<Box
+						sx={{
+							width: '100%',
+							height: '350px',
+							background: 'linear-gradient(-45deg, #ac5376, #b4ae64, #4a859b, #4a949b)',
+							backgroundSize: '400% 400%',
+							animation: 'gradientAnimation 5s linear infinite',
+							'@keyframes gradientAnimation': {
+								'0%': {
+									backgroundPosition: '0% 50%',
+								},
+								'50%': {
+									backgroundPosition: '100% 50%',
+								},
+								'100%': {
+									backgroundPosition: '0% 50%',
+								},
+							},
+						}}
+					>
+					</Box>
 					{detail.attachment_bgm && (
 						<IconButton
 							onClick={togglePlay}
@@ -78,7 +99,7 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 								},
 							}}
 						>
-							{isPlaying ? <PauseIcon sx={{ fontSize: 40 }} /> : <PlayArrowIcon sx={{ fontSize: 40 }} />}
+							{isPlaying ? <PauseIcon sx={{fontSize: 40}}/> : <PlayArrowIcon sx={{fontSize: 40}}/>}
 						</IconButton>
 					)}
 				</div>

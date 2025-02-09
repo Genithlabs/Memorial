@@ -19,10 +19,34 @@ export default function SignIn() {
 	const router = useRouter();
 	const [isMounted, setIsMounted] = useState(false);
 
-	useEffect(() => {
+	const fetchData = async () => {
 		if (session) {
-			router.push('/form');
+			try {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${session.accessToken}`,
+					},
+				});
+
+				if (response.ok) {
+					const result = await response.json();
+					if (result.result === 'success' && result.data) {
+						router.push(`/detail/${result.data.id}`);
+						return;
+					}
+				}
+				router.push('/form');
+			} catch (error) {
+				console.error('Error fetching data:', error);
+				router.push('/form');
+			}
 		}
+	};
+
+	useEffect(() => {
+		// async 함수를 호출합니다.
+		fetchData();
 	}, [session, router]);
 
 	useEffect(() => {
@@ -42,7 +66,7 @@ export default function SignIn() {
 		});
 
 		if (result?.ok) {
-			router.push('/form');
+			fetchData();
 		} else {
 			alert('아이디 또는 비밀번호를 다시 확인해주세요.');
 		}
@@ -84,14 +108,10 @@ export default function SignIn() {
 						required
 						fullWidth
 						name="password"
-						label="Password"
+						label="비밀번호"
 						type="password"
 						id="password"
 						autoComplete="current-password"
-					/>
-					<FormControlLabel
-						control={<Checkbox value="remember" color="primary" />}
-						label="Remember me"
 					/>
 					<Button
 						type="submit"
@@ -99,7 +119,7 @@ export default function SignIn() {
 						variant="contained"
 						sx={{ mt: 3, mb: 2 }}
 					>
-						Sign In
+						로그인
 					</Button>
 					<Grid container justifyContent="space-between" alignItems="center">
 						<Grid item>

@@ -2,12 +2,10 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import Slider from 'react-slick';
@@ -109,6 +107,53 @@ export default function Main({ memorialCards }: MainProps) {
 		]
 	};
 
+	const settings2 = {
+		autoplay: true, // 자동 재생 활성화
+		infinite: true,
+		slidesToShow: 2.5,
+		slidesToScroll: 1, // 한 번에 하나씩 이동
+		arrows: false,
+		dots: false,
+		centerMode: false, // centerMode 사용 안 함
+		speed: 30000, // 전환 속도를 느리게 (밀리는 효과)
+		autoplaySpeed: 0, // 슬라이드 간 대기 시간 없음
+		cssEase: 'linear', // 전환 효과를 선형으로 설정
+		pauseOnHover: true,
+		responsive: [
+			{
+				breakpoint: 768, // 반응형 처리
+				settings: {
+					slidesToShow: 1.2,
+				},
+			},
+			{
+				breakpoint: 480,
+				settings: {
+					slidesToShow: 1.2,
+				},
+			},
+		],
+	};
+
+	const slidesData = [
+		{
+			title: '메모리얼이 기억과 추억을 안전하게 보관해드립니다',
+			description: '소중한 개인의 사진, 영상, 음성 등 모든 기록을 영구적으로 보존해요.',
+		},
+		{
+			title: '나의 인생을 회고하고 반추해보세요',
+			description: '음성 녹음만으로도 자신의 생애를 정리해주는 AI 기반 자서전을 개발중이에요',
+		},
+		{
+			title: '언제 헤어지더라도, 사랑하는 이들에게 남기고 싶은 말을 기록할 수 있어요',
+			description: '돌아가신 후에도 소중한 사람들에게 기념일마다 음성, 및 글 메세지를 전해드려요',
+		},
+		{
+			title: '부모님, 또는 지인의 삶을 기념해보세요',
+			description: (<>그리워질 때 언제든 기념관에서 기억을 꺼내보세요.<br />사랑하는 사람의 아름다운 인생을 기념해주세요</>),
+		},
+	];
+
 	return (
 		<main>
 			<style jsx global>{`
@@ -117,72 +162,192 @@ export default function Main({ memorialCards }: MainProps) {
                     display: none;
                 }
             `}</style>
-			{/* Hero unit */}
 			<Box
 				sx={{
 					bgcolor: 'background.paper',
-					pt: 8,
+					pt: 6,
 					pb: 6,
 				}}
 			>
-				<Container maxWidth="md">
-					<Typography
-						component="h1"
-						align="center"
-						color="text.primary"
-						gutterBottom
-						sx={{
-							fontSize: {
-								xs: '2rem',
-								sm: '2.5rem',
-								md: '4rem'
-							},
-							fontWeight: 300,
-							fontFamily: "'Grandiflora One', sans-serif",
-						}}
-					>
-						평범한 우리들의 인생은<br/>갑작스레 끝나고,<br/>덧없이 흩어지게 될까요?
-					</Typography>
-					<Typography
-						align="center"
-						color="text.primary"
-						paragraph
-						sx={{
-							fontSize: {
-								xs: '.7rem',
-								sm: '1rem',
-								md: '1.5rem'
-							},
-						}}
-					>
-						나의 삶, 사랑하는 이의 삶을 영원히 기억할 기념관을 만들어보세요
-					</Typography>
-					<Stack
-						sx={{ pt: 4 }}
-						direction="row"
-						justifyContent="center"
-					>
-						<NextLink href={redirectUrl} passHref>
-							<Button
-								variant="contained"
+				<Box
+					sx={{
+						position: 'absolute',
+						top: 200,
+						left: 0,
+						right: 0,
+						margin: '0 auto',
+						width: {
+							xs: '250px',
+							sm: '300px',
+							md: '450px',
+						},
+						height: {
+							xs: '250px',
+							sm: '300px',
+							md: '450px',
+						},
+						borderRadius: '50%',
+						background: 'linear-gradient(to bottom, #ec9f89, #a29ebe)',
+						zIndex: 0,
+					}}
+				/>
+
+				<Typography
+					component="h1"
+					align="center"
+					color="text.primary"
+					gutterBottom
+					sx={{
+						fontSize: {
+							xs: '2rem',
+							sm: '2.5rem',
+							md: '4rem'
+						},
+						fontWeight: 300,
+						fontFamily: "'Grandiflora One', sans-serif",
+						zIndex: 1,
+						position: 'relative',
+						marginTop: "130px",
+					}}
+				>
+					평범한 우리들의 인생은<br/>갑작스레 끝나고,<br/>덧없이 흩어지게 될까요?
+				</Typography>
+				<Typography
+					align="center"
+					color="text.primary"
+					paragraph
+					sx={{
+						fontSize: {
+							xs: '.7rem',
+							sm: '1rem',
+							md: '1.5rem'
+						},
+						zIndex: 1,
+						position: 'relative',
+					}}
+				>
+					나의 삶, 사랑하는 이의 삶을 영원히 기억할 기념관을 만들어보세요
+				</Typography>
+				<Stack
+					sx={{ pt: 10 }}
+					direction="row"
+					justifyContent="center"
+				>
+					<NextLink href={redirectUrl} passHref>
+						<Button
+							variant="contained"
+							sx={{
+								backgroundColor: 'black',
+								color: 'white',
+								fontSize: '1.2rem',
+								padding: '12px 24px',
+								minWidth: '200px',
+								height: '60px',
+								'&:hover': {
+									backgroundColor: '#333',
+								},
+								fontFamily: "Inter"
+							}}
+						>
+							기념관 만들기
+						</Button>
+					</NextLink>
+				</Stack>
+			</Box>
+			<Box
+				sx={{
+					position: 'relative',
+					pt: 15,
+					pb: 6,
+				}}
+			>
+				<Box
+					sx={{
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						width: '10%',
+						height: '100%',
+						background: 'linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))',
+						zIndex: 2,
+						pointerEvents: 'none',
+					}}
+				/>
+				<Box
+					sx={{
+						position: 'absolute',
+						top: 0,
+						right: 0,
+						width: '10%',
+						height: '100%',
+						background: 'linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))',
+						zIndex: 2,
+						pointerEvents: 'none',
+					}}
+				/>
+				<Slider {...settings2}>
+					{slidesData.map((slide, index) => (
+							<Box
+								key={index}
 								sx={{
-									backgroundColor: 'black',
-									color: 'white',
-									fontSize: '1.2rem', // 글씨 크기 증가
-									padding: '12px 24px', // 상하좌우 여백
-									minWidth: '200px', // 버튼 최소 너비
-									height: '60px', // 버튼 높이
-									'&:hover': {
-										backgroundColor: '#333', // 호버 시 배경색
-									},
-									fontFamily: "Inter"
+									padding: {
+										xs: '0 20px',
+										sm: '0 30px',
+										md: '0 50px',
+										lg: '0 100px',
+									}
 								}}
 							>
-								기념관 만들기
-							</Button>
-						</NextLink>
-					</Stack>
-				</Container>
+								<Card
+									sx={{
+										border: 'none',
+										boxShadow: 'none',
+									}}
+								>
+									<CardMedia
+										component="img"
+										sx={{
+											width: '70%',
+											height: 'auto',
+											boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
+										}}
+										image={`/img${index + 1}.png`}
+									/>
+									<Typography
+										sx={{
+											pt: {
+												xs: '25px',
+												md: '32px',
+											},
+											fontSize: {
+												xs: '20px',
+												md: '28px',
+											},
+											letterSpacing: '-2px',
+											lineHeight: '1.2',
+											wordBreak: 'keep-all',
+										}}
+									>
+										{slide.title}
+									</Typography>
+									<Typography
+										sx={{
+											pt: '12px',
+											fontSize: {
+												xs: '14px',
+												md: '16px'
+											},
+											letterSpacing: '-1.5px',
+											lineHeight: '1.2',
+											wordBreak: 'keep-all',
+										}}
+									>
+										{slide.description}
+									</Typography>
+								</Card>
+							</Box>
+						))}
+				</Slider>
 			</Box>
 			<Box
 				sx={{
@@ -191,111 +356,187 @@ export default function Main({ memorialCards }: MainProps) {
 					pb: 6,
 				}}
 			>
-				<Container sx={{ py: 8 }} maxWidth="md">
-					<Typography
-						align="center"
-						sx={{
-							fontSize: {
-								xs: '2rem',
-								sm: '2rem',
-								md: '2rem'
-							},
-							fontWeight: 300,
-							fontColor: 'black',
-							marginTop: "1rem",
-							marginBottom: "33px",
-						}}
+				<Typography
+					align="center"
+					sx={{
+						fontSize: {
+							xs: '2rem',
+							sm: '2rem',
+							md: '2rem'
+						},
+						fontWeight: 300,
+						fontColor: 'black',
+						marginTop: "1rem",
+						pt: 10,
+					}}
+				>
+					다른 기념관 들러보기
+				</Typography>
+				<Box
+					sx={{
+						padding: {
+							sm: "0 20px",
+							md: "0 100px",
+							lx: "0 200px",
+						}
+					}}
+				>
+				{isDesktop && memorialCards.length > 4 ? (
+
+					<Slider
+						{...settings}
 					>
-						다른 기념관 들러보기
-					</Typography>
-					{/* End hero unit */}
-					{isDesktop && memorialCards.length > 4 ? (
-						<Slider {...settings}>
-							{memorialCards.map((card) => (
-								<Box key={card.id} sx={{ px: 2 }}>
-									<NextLink href={`/detail/${card.id}`} passHref>
-										<Card
-											sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: "90%"}}
-										>
-											<CardMedia
-												component="div"
-												sx={{
-													pt: '75%'
-												}}
-												image={card.attachment_profile_image ? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}` : "https://source.unsplash.com/random?wallpapers"}
-											/>
-										</Card>
-									</NextLink>
-								</Box>
-							))}
-						</Slider>
-					) : (
-						<Grid container spacing={4} justifyContent="center">
-							{memorialCards.map((card) => (
-								<Grid item key={card.id} xs={12} sm={6} md={3}>
-									<NextLink href={`/detail/${card.id}`} passHref>
-										<Card
-											sx={{ height: '100%', display: 'flex', flexDirection: 'column', }}
-										>
-											<CardMedia
-												component="div"
-												sx={{
-													pt: '75%'
-												}}
-												image={card.attachment_profile_image ? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}` : "https://source.unsplash.com/random?wallpapers"}
-											/>
-										</Card>
-									</NextLink>
-								</Grid>
-							))}
-						</Grid>
-					)}
-				</Container>
+						{memorialCards.map((card) => (
+							<Box key={card.id} sx={{ px: 2 }}>
+								<NextLink href={`/detail/${card.id}`} passHref>
+									<Card
+										sx={{
+											display: 'flex',
+											flexDirection: 'column',
+											width: { xs: '270px', sm: '230px', md: '200px', xl: '230px'},
+											height: { xs: '300px', sm: '260px', md: '230px', xl: '270px'},
+											borderRadius: '130px',
+											overflow: 'hidden',
+											maxWidth: '100%',
+											justifyContent: 'center',
+											alignItems: 'center',
+											margin: '0 auto',
+											mt: '2rem',
+										}}
+									>
+										<CardMedia
+											component="div"
+											sx={{
+												width: '100%',
+												height: '100%',
+											}}
+											image={
+												card.attachment_profile_image
+													? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}`
+													: 'https://source.unsplash.com/random?wallpapers'
+											}
+										/>
+									</Card>
+								</NextLink>
+								<Typography
+									sx={{
+										width: '100%',
+										margin: '2rem auto 0',
+										textAlign: 'center',
+										fontSize: {
+											xs: '1.2rem',
+											md: '1rem',
+										},
+										lineHeight: '1.2',
+									}}
+								>{card.user_name}</Typography>
+							</Box>
+						))}
+					</Slider>
+				) : (
+					<Grid container spacing={4} justifyContent="center">
+						{memorialCards.map((card) => (
+							<Grid item key={card.id} xs={12} sm={6} md={3}>
+								<NextLink href={`/detail/${card.id}`} passHref>
+									<Card
+										sx={{
+											display: 'flex',
+											flexDirection: 'column',
+											width: { xs: '270px', sm: '230px', md: '200px', xl: '230px'},
+											height: { xs: '300px', sm: '260px', md: '230px', xl: '270px'},
+											borderRadius: '130px',
+											overflow: 'hidden',
+											maxWidth: '100%',
+											justifyContent: 'center',
+											alignItems: 'center',
+											margin: '0 auto',
+											mt: '2rem',
+										}}
+									>
+										<CardMedia
+											component="div"
+											sx={{
+												width: '100%',
+												height: '100%',
+											}}
+											image={
+												card.attachment_profile_image
+													? `${process.env.NEXT_PUBLIC_IMAGE}${card.attachment_profile_image.file_path}${card.attachment_profile_image.file_name}`
+													: 'https://source.unsplash.com/random?wallpapers'
+											}
+										/>
+									</Card>
+								</NextLink>
+								<Typography
+									sx={{
+										width: '100%',
+										margin: '2rem auto 0',
+										textAlign: 'center',
+										fontSize: {
+											xs: '1.2rem',
+											md: '1rem',
+										},
+										lineHeight: '1.2',
+									}}
+								>{card.user_name}</Typography>
+							</Grid>
+						))}
+					</Grid>
+				)}
+				</Box>
 			</Box>
 			<Box
 				sx={{
-					bgcolor: 'background.paper',
-					pt: 8,
-					pb: 6,
+					pt: 7,
+					pb: 7,
+					mt: 10,
+					backgroundImage: 'url(/bottom_bg.png)',
+					backgroundRepeat: 'no-repeat',
+					backgroundPosition: 'center',
+					backgroundSize: 'cover',
 				}}
 			>
-				<Container maxWidth="md">
-					<Typography
-						align="center"
-						color="text.primary"
-						paragraph
-						sx={{
-							fontSize: {
-								xs: '.9rem',
-								sm: '1.5rem',
-								md: '2rem'
-							},
-						}}
-					>
-						위인들만 기념관을 만들 수 있는 것은 아니에요<br/>기억할 사람들을 위해 기념관을 만들어보세요
-					</Typography>
-					<Typography align="center" sx={{marginTop: "33px"}}>
-						<NextLink href="" passHref>
-							<Button
-								variant="contained"
-								sx={{
-									backgroundColor: 'black',
-									color: 'white',
-									fontSize: '1.2rem', // 글씨 크기 증가
-									padding: '12px 24px', // 상하좌우 여백
-									minWidth: '200px', // 버튼 최소 너비
-									height: '60px', // 버튼 높이
-									'&:hover': {
-										backgroundColor: '#333', // 호버 시 배경색
-									},
-									fontFamily: "Inter"
-								}}
-							>
-								새 기념관 만들기
-							</Button>
-						</NextLink>
-					</Typography>
-				</Container>
+				<Typography
+					align="center"
+					color="text.primary"
+					paragraph
+					sx={{
+						fontSize: {
+							xs: '1.1rem',
+							sm: '1.5rem',
+							md: '2rem'
+						},
+					}}
+				>
+					위인들만 기념관을 만들 수 있는 것은 아니에요<br/>기억할 사람들을 위해 기념관을 만들어보세요
+				</Typography>
+				<Typography align="center" sx={{marginTop: "33px"}}>
+					<NextLink href="/form" passHref>
+						<Button
+							variant="contained"
+							sx={{
+								backgroundColor: 'black',
+								color: 'white',
+								fontSize: {
+									xs: '0.9rem',
+									sm: '1.1rem',
+								},
+								padding: '12px 24px',
+								minWidth: '200px',
+								height: {
+									xs: '40px',
+									sm: '60px',
+								},
+								'&:hover': {
+									backgroundColor: '#333',
+								},
+								fontFamily: "Inter"
+							}}
+						>
+							새 기념관 만들기
+						</Button>
+					</NextLink>
+				</Typography>
 			</Box>
 		</main>
 	);

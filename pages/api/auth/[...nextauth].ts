@@ -5,6 +5,7 @@ interface CustomUser {
 	id: string;
 	access_token: string;
 	refresh_token: string;
+	is_purchase_request: boolean;
 }
 
 export default NextAuth({
@@ -38,26 +39,32 @@ export default NextAuth({
 						id: 'temp-id', // 임시 ID 값
 						access_token: user.access_token,
 						refresh_token: user.refresh_token,
-					}
-				} else {
-					return null;
+						is_purchase_request: user.is_purchase_request, // API 응답에서 받아온 값
+					};
 				}
-			}
-		})
+				return null;
+			},
+		}),
 	],
 	callbacks: {
 		async jwt({ token, user }) {
+			// 로그인 직후 user 객체가 존재하면 token에 값을 추가
 			if (user) {
 				token.accessToken = (user as CustomUser).access_token;
+				token.is_purchase_request = (user as CustomUser).is_purchase_request;
+				token.user_id = (user as CustomUser).id;
 			}
 			return token;
 		},
 		async session({ session, token }) {
+			// session 객체에 token의 값을 추가
 			session.accessToken = `${token.accessToken}`;
+			session.is_purchase_request = token.is_purchase_request ?? false;
+			session.user_id = token.user_id;
 			return session;
-		}
+		},
 	},
 	pages: {
 		signOut: '/', // 로그아웃 후 리디렉션할 URL 설정
-	}
-})
+	},
+});

@@ -28,6 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         const memorialCards: MemorialCard[] = result.data.map((item: any) => ({
             id: item.id,
+            user_name: item.user_name,
             attachment_profile_image: item.attachment_profile_image,
         }));
 

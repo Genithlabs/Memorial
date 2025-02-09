@@ -7,7 +7,9 @@ export default function Footer() {
 	return (
 		<Box
 			sx={{
-				p: 6,
+				pt: 20,
+				px: 2,
+				pb: 6,
 				backgroundColor: 'white', // 배경색 흰색
 				color: 'black', // 텍스트 색상을 검은색으로 설정
 				textAlign: 'left', // 텍스트 왼쪽 정렬

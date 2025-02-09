@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Basic from "../components/form/Basic";
 import Birth from "../components/form/Birth";
-import Preview from "../components/form/Preview";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
@@ -14,7 +13,7 @@ import Button from "@mui/material/Button";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 
-const steps = ['기본 정보 입력', '생애 입력', '건립한 기념관 보기'];
+const steps = ['기본 정보 입력', '생애 입력'];
 
 function getStepContent(step: number, router: any, basicInfo: any, setBasicInfo: any, content: any, setContent: any, memorialId: any) {
 	switch (step) {
@@ -25,8 +24,6 @@ function getStepContent(step: number, router: any, basicInfo: any, setBasicInfo:
 			return <Basic basicInfo={basicInfo} setBasicInfo={setBasicInfo} />;
 		case 1:
 			return <Birth content={content} setContent={setContent} />;
-		case 2:
-			return <Preview memorialId={memorialId} basicInfo={basicInfo} content={content}/>;
 		default:
 			throw new Error('Unknown step');
 	}
@@ -168,6 +165,51 @@ export default function Form() {
 		}
 	};
 
+	const handleFinalize = async () => {
+		try {
+			if (!memorialId) {
+				if (session) {
+					const formData = new FormData();
+					formData.append('user_name', basicInfo.user_name);
+					formData.append('birth_start', basicInfo.birth_start);
+					if (basicInfo.birth_end) {
+						formData.append('birth_end', basicInfo.birth_end);
+					}
+					if (basicInfo.profile) {
+						formData.append('profile', basicInfo.profile);
+					}
+					if (basicInfo.bgm) {
+						formData.append('bgm', basicInfo.bgm);
+					}
+					formData.append('career', content);
+
+					const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/register`, {
+						method: 'POST',
+						headers: {
+							'Authorization': `Bearer ${session.accessToken}`,
+						},
+						body: formData,
+					});
+
+					const result = await response.json();
+					if (response.ok && result.result === 'success') {
+						alert('기념관이 성공적으로 등록되었습니다.');
+						router.push(`/detail/${result.data.id}`);
+					} else {
+						const errorMessage = result.message ?
+							(Array.isArray(result.message) ? result.message.join(', ') : result.message)
+							: 'ERROR!!';
+						alert(`ERROR: ${errorMessage}`);
+					}
+				}
+			} else {
+				router.push(`/detail/${memorialId}`);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<>
 			<Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -188,15 +230,13 @@ export default function Form() {
 							<Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
 								뒤로
 							</Button>
-							{activeStep < (steps.length - 1) &&
-								<Button
-									onClick={handleNext}
-									sx={{ mt: 3, ml: 1 }}
-									color="inherit"
-								>
-									다음
-								</Button>
-							}
+							<Button
+								onClick={activeStep === 1 ? handleFinalize : handleNext}
+								sx={{ mt: 3, ml: 1 }}
+								color="inherit"
+							>
+								다음
+							</Button>
 						</Box>
 					</>
 				</Paper>

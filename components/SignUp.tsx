@@ -63,6 +63,7 @@ export default function SignUp() {
 				alert('회원 가입 실패: ' + result.error[0]);
 			}
 		} catch (error) {
+			console.log(error);
 			alert('회원 가입 중 에러 발생: ' + error);
 		}
 	};
