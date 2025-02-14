@@ -505,29 +505,36 @@ export default function Main({ memorialCards }: MainProps) {
 						},
 					}}
 				>
-					위인들만 기념관을 만들 수 있는 것은 아니에요<br/>기억할 사람들을 위해 기념관을 만들어보세요
+					위인들만 기념관을 만들 수 있는 것은 아닙니다.<br/>사랑하는 이들을 위해 기념관을 만들어보세요
 				</Typography>
 				<Typography align="center" sx={{marginTop: "33px"}}>
 					<NextLink href="/form" passHref>
 						<Button
 							variant="contained"
 							sx={{
-								backgroundColor: 'black',
-								color: 'white',
-								fontSize: {
-									xs: '0.9rem',
-									sm: '1.1rem',
-								},
-								padding: '12px 24px',
-								minWidth: '200px',
-								height: {
-									xs: '40px',
-									sm: '60px',
-								},
+								mt: 2,
+								mb: 2,
+								pt: 2,
+								pb: 2,
+								backgroundColor: '#222222',
+								boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
 								'&:hover': {
-									backgroundColor: '#333',
+									boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.5)',
 								},
-								fontFamily: "Inter"
+								borderRadius: 2,
+								fontFamily: 'Noto Sans',
+								fontSize: {
+									xs: '1rem',
+									sm: '1.2rem',
+								},
+								minWidth: {
+									xs: '150px',
+									sm: '200px',
+								},
+								height: {
+									xs: '50px',
+									sm: '60px'
+								},
 							}}
 						>
 							새 기념관 만들기
