@@ -16,6 +16,10 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 	const [isDisabled, setIsDisabled] = useState(false);
 
 	const handleButtonClick = (flag: boolean) => {
+		if (!session) {
+			alert("로그인을 하셔야 메시지를 쓸 수 있어요");
+			return false;
+		}
 		setShowTextArea(flag);
 	};
 
@@ -43,6 +47,10 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 					setVisitorMessages([...result.data]);
 					setVisitorMessagesState([...result.data]);
 					setMessage("");
+				}
+			} else {
+				if (!session) {
+					alert("로그인을 하셔야 메시지를 쓸 수 있어요.");
 				}
 			}
 		} catch (error) {
