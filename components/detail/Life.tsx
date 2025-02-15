@@ -13,14 +13,16 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 	const { data: session } = useSession();
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [message, setMessage] = useState("");
+	const [isDisabled, setIsDisabled] = useState(false);
 
 	const handleButtonClick = (flag: boolean) => {
 		setShowTextArea(flag);
 	};
 
 	const handleRegisterComment = async () => {
+		setIsDisabled(true);
 		try {
-			if (session) {
+			if (session && !isDisabled) {
 				if (!message) {
 					alert("메시지를 입력해주세요.")
 					return false;
@@ -45,6 +47,8 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 			}
 		} catch (error) {
 			console.error("ERROR: ", error);
+		} finally {
+			setIsDisabled(false);
 		}
 	};
 
@@ -105,7 +109,12 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 								>
 									취소
 								</Button>
-								<Button variant="contained" onClick={handleRegisterComment}>
+								<Button variant="contained" onClick={handleRegisterComment} disabled={isDisabled} sx={{
+									'&.Mui-disabled': {
+										backgroundColor: 'gray',
+										color: 'white'
+									}
+								}}>
 									게시하기
 								</Button>
 							</Box>

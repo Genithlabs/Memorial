@@ -43,6 +43,7 @@ export default function Form() {
 	const [content, setContent] = useState("");
 	const [memorialId, setMemorialId] = useState("");
 	const dataFetchedRef = useRef(false);
+	const [isDisabled, setIsDisabled] = useState(false);
 
 	useEffect(() => {
 		const fetchView = async () => {
@@ -166,8 +167,9 @@ export default function Form() {
 	};
 
 	const handleFinalize = async () => {
+		setIsDisabled(true); // 버튼 비활성화
 		try {
-			if (!memorialId) {
+			if (!memorialId && !isDisabled) {
 				if (session) {
 					const formData = new FormData();
 					formData.append('user_name', basicInfo.user_name);
@@ -207,6 +209,8 @@ export default function Form() {
 			}
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setIsDisabled(false);
 		}
 	};
 
@@ -232,8 +236,15 @@ export default function Form() {
 							</Button>
 							<Button
 								onClick={activeStep === 1 ? handleFinalize : handleNext}
-								sx={{ mt: 3, ml: 1 }}
-								color="inherit"
+								sx={{
+									mt: 3,
+									ml: 1,
+									'&.Mui-disabled': {
+										backgroundColor: 'gray',
+										color: 'white'
+									}
+								}}
+								disabled={isDisabled}
 							>
 								다음
 							</Button>

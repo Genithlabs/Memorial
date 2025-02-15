@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import {useState} from "react";
 
 function Copyright() {
 	return (
@@ -25,8 +26,10 @@ function Copyright() {
 
 export default function SignUp() {
 	const router = useRouter();
+	const [isDisabled, setDisabled] = useState(false);
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setDisabled(true);
 		const data = new FormData(event.currentTarget);
 		const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user/register`;
 
@@ -50,21 +53,25 @@ export default function SignUp() {
 		}
 
 		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify(formData),
-			});
+			if (!isDisabled) {
+				const response = await fetch(url, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(formData),
+				});
 
-			if (response.ok) {
-				router.push('/signin');
-			} else {
-				const result = await response.json();
-				alert('회원 가입 실패: ' + result.error[0]);
+				if (response.ok) {
+					router.push('/signin');
+				} else {
+					const result = await response.json();
+					alert('회원 가입 실패: ' + result.error[0]);
+				}
 			}
 		} catch (error) {
 			console.log(error);
 			alert('회원 가입 중 에러 발생: ' + error);
+		} finally {
+			setDisabled(false);
 		}
 	};
 
@@ -142,7 +149,15 @@ export default function SignUp() {
 							type="submit"
 							fullWidth
 							variant="contained"
-							sx={{ mt: 3, mb: 2 }}
+							sx={{
+								mt: 3,
+								mb: 2,
+								'&.Mui-disabled': {
+									backgroundColor: 'gray',
+									color: 'white'
+								}
+							}}
+							disabled={isDisabled}
 						>
 							확인
 						</Button>
