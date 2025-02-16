@@ -171,7 +171,14 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 						{birthEnd ? `${birthStart} ~ ${birthEnd}` : `${birthStart} ~`}
 					</Typography>
 				</Container>
-				<Container sx={{ mt: {xs:"5rem", sm: "7.5rem", md: "10rem"} }}>
+				<Container sx={{
+					mt: {xs:"5rem", sm: "7.5rem", md: "10rem"},
+					width: {
+						xs: "100%",
+						sm: "70%",
+						md: "50%",
+					},
+				}}>
 					<TabsCustomized visitorMessages={visitorMessages} memories={memories} detail={detail} memorialId={memorialId} setMemories={setMemories} setVisitorMessages={setVisitorMessages}/>
 				</Container>
 			</main>

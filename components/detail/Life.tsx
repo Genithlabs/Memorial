@@ -70,6 +70,7 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 				sx={{
 					p: "1rem",
 					fontSize: "1rem",
+					wordWrap: 'break-word',
 				}}
 				className={"diff-card-section"}
 			>

@@ -5,6 +5,7 @@ import {useState} from "react";
 import MemoryForm from "@/components/detail/MemoryForm";
 import Grow from "@mui/material/Grow";
 import {MemoryProps} from "./interfaces";
+import styles from '../../styles/detail/memory.module.css';
 
 export default function Memory({ memories: initialMemories, memorialId, setMemories }: MemoryProps) {
 	const [memories, setMemoriesState] = useState(initialMemories);
@@ -74,10 +75,10 @@ export default function Memory({ memories: initialMemories, memorialId, setMemor
 										<img
 											src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 											alt="Memory Image"
-											style={{ width: '100%', marginTop: '1rem' }}
+											className={styles.customImage}
 										/>
 									) : /\.(mp4|mov)$/i.test(attachment.file_name) ? (
-										<video controls style={{ width: '100%', marginTop: '1rem' }}>
+										<video controls style={{width: '100%', marginTop: '1rem'}}>
 											<source
 												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 												type="video/mp4"
