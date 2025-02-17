@@ -78,14 +78,14 @@ export default function Memory({ memories: initialMemories, memorialId, setMemor
 											className={styles.customImage}
 										/>
 									) : /\.(mp4|mov)$/i.test(attachment.file_name) ? (
-										<video controls style={{width: '100%', marginTop: '1rem'}}>
+										<video controls className={styles.customImage}>
 											<source
 												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 												type="video/mp4"
 											/>
 										</video>
 									) : /\.(mp3)$/i.test(attachment.file_name) ? (
-										<video controls style={{ width: '100%', marginTop: '1rem', height: '60px' }}>
+										<video controls className={styles.customImage}>
 											<source
 												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 												type="audio/mp3"
