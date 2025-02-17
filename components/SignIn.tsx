@@ -132,7 +132,7 @@ export default function SignIn() {
 								{' / '}
 								<NextLink href="/find-password" passHref>
 									<MUILink>
-										패스워드 찾기
+										비밀번호 찾기
 									</MUILink>
 								</NextLink>
 							</Typography>

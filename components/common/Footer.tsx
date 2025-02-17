@@ -54,10 +54,10 @@ export default function Footer() {
 				fontFamily: "'Noto Sans', sans-serif",
 				fontSize: "12px",
 			}}>
-				<MUILink color="inherit" href="https://mui.com/" sx={{textDecoration: 'none', marginRight: "10px"}}>
+				<MUILink color="inherit" href="/terms/privacy" sx={{textDecoration: 'none', marginRight: "10px"}}>
 					개인정보 처리 방침
 				</MUILink>
-				<MUILink color="inherit" href="https://mui.com/" sx={{textDecoration: 'none'}}>
+				<MUILink color="inherit" href="/terms/use" sx={{textDecoration: 'none'}}>
 					이용 약관
 				</MUILink>
 			</Typography>

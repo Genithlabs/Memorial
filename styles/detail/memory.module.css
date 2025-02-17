@@ -1,0 +1,11 @@
+.customImage {
+    display: block;
+    width: 50%;
+    margin: 1rem auto;
+}
+
+@media (max-width: 1024px) {
+    .customImage {
+        width: 100%;
+    }
+}

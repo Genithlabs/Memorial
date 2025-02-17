@@ -14,7 +14,7 @@ export default function TabsCustomized({ visitorMessages, memories, detail, memo
 		<Tabs defaultValue={1}>
 			<StyledTabsList>
 				<StyledTab value={1}>생애<br/>Life</StyledTab>
-				<StyledTab value={2}>추억과 메모리<br/>Memory And Message</StyledTab>
+				<StyledTab value={2}>기억들<br/>Memories</StyledTab>
 			</StyledTabsList>
 			<StyledTabPanel value={1}><Life visitorMessages={visitorMessages} detail={detail} memorialId={memorialId} setVisitorMessages={setVisitorMessages} /></StyledTabPanel>
 			<StyledTabPanel value={2}><Memory memories={memories} memorialId={memorialId} setMemories={setMemories} /></StyledTabPanel>

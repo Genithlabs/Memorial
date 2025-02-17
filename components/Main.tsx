@@ -141,12 +141,12 @@ export default function Main({ memorialCards }: MainProps) {
 			description: '소중한 개인의 사진, 영상, 음성 등 모든 기록을 영구적으로 보존해요.',
 		},
 		{
-			title: '나의 인생을 회고하고 반추해보세요',
-			description: '음성 녹음만으로도 자신의 생애를 정리해주는 AI 기반 자서전을 개발중이에요',
-		},
-		{
 			title: '언제 헤어지더라도, 사랑하는 이들에게 남기고 싶은 말을 기록할 수 있어요',
 			description: '돌아가신 후에도 소중한 사람들에게 기념일마다 음성, 및 글 메세지를 전해드려요',
+		},
+		{
+			title: '나의 인생을 회고하고 반추해보세요',
+			description: '음성 녹음만으로도 자신의 생애를 정리해주는 AI 기반 자서전을 개발중이에요',
 		},
 		{
 			title: '부모님, 또는 지인의 삶을 기념해보세요',
@@ -169,29 +169,6 @@ export default function Main({ memorialCards }: MainProps) {
 					pb: 6,
 				}}
 			>
-				<Box
-					sx={{
-						position: 'absolute',
-						top: 200,
-						left: 0,
-						right: 0,
-						margin: '0 auto',
-						width: {
-							xs: '250px',
-							sm: '300px',
-							md: '450px',
-						},
-						height: {
-							xs: '250px',
-							sm: '300px',
-							md: '450px',
-						},
-						borderRadius: '50%',
-						background: 'linear-gradient(to bottom, #ec9f89, #a29ebe)',
-						zIndex: 0,
-					}}
-				/>
-
 				<Typography
 					component="h1"
 					align="center"
@@ -199,18 +176,25 @@ export default function Main({ memorialCards }: MainProps) {
 					gutterBottom
 					sx={{
 						fontSize: {
-							xs: '2rem',
+							xs: '1.6rem',
 							sm: '2.5rem',
 							md: '4rem'
 						},
-						fontWeight: 300,
+						fontWeight: {
+							xs: 600,
+							sm: 300,
+						},
 						fontFamily: "'Grandiflora One', sans-serif",
 						zIndex: 1,
 						position: 'relative',
 						marginTop: "130px",
+						pr: 2,
+						pl: 2,
+						wordBreak: 'keep-all',
 					}}
 				>
-					평범한 우리들의 인생은<br/>갑작스레 끝나고,<br/>덧없이 흩어지게 될까요?
+					"우리 삶, 다 저마다 괜찮아요"<br/>
+					틀리지 않았던 당신의 인생 뜻 깊게 기억하고 전해보세요
 				</Typography>
 				<Typography
 					align="center"
@@ -218,18 +202,18 @@ export default function Main({ memorialCards }: MainProps) {
 					paragraph
 					sx={{
 						fontSize: {
-							xs: '.7rem',
-							sm: '1rem',
-							md: '1.5rem'
+							xs: '1.2rem',
+							sm: '1.5rem',
+							md: '2rem'
 						},
 						zIndex: 1,
 						position: 'relative',
 					}}
 				>
-					나의 삶, 사랑하는 이의 삶을 영원히 기억할 기념관을 만들어보세요
+					당신의 인생 기념관, 메모리얼
 				</Typography>
 				<Stack
-					sx={{ pt: 10 }}
+					sx={{ pt: 4 }}
 					direction="row"
 					justifyContent="center"
 				>
@@ -237,16 +221,29 @@ export default function Main({ memorialCards }: MainProps) {
 						<Button
 							variant="contained"
 							sx={{
-								backgroundColor: 'black',
-								color: 'white',
-								fontSize: '1.2rem',
-								padding: '12px 24px',
-								minWidth: '200px',
-								height: '60px',
+								mt: 2,
+								mb: 2,
+								pt: 2,
+								pb: 2,
+								backgroundColor: '#222222',
+								boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
 								'&:hover': {
-									backgroundColor: '#333',
+									boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.5)',
 								},
-								fontFamily: "Inter"
+								borderRadius: 2,
+								fontFamily: 'Noto Sans',
+								fontSize: {
+									xs: '1rem',
+									sm: '1.2rem',
+								},
+								minWidth: {
+									xs: '150px',
+									sm: '200px',
+								},
+								height: {
+									xs: '50px',
+									sm: '60px'
+								},
 							}}
 						>
 							기념관 만들기
@@ -508,29 +505,36 @@ export default function Main({ memorialCards }: MainProps) {
 						},
 					}}
 				>
-					위인들만 기념관을 만들 수 있는 것은 아니에요<br/>기억할 사람들을 위해 기념관을 만들어보세요
+					위인들만 기념관을 만들 수 있는 것은 아닙니다.<br/>사랑하는 이들을 위해 기념관을 만들어보세요
 				</Typography>
 				<Typography align="center" sx={{marginTop: "33px"}}>
 					<NextLink href="/form" passHref>
 						<Button
 							variant="contained"
 							sx={{
-								backgroundColor: 'black',
-								color: 'white',
-								fontSize: {
-									xs: '0.9rem',
-									sm: '1.1rem',
-								},
-								padding: '12px 24px',
-								minWidth: '200px',
-								height: {
-									xs: '40px',
-									sm: '60px',
-								},
+								mt: 2,
+								mb: 2,
+								pt: 2,
+								pb: 2,
+								backgroundColor: '#222222',
+								boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
 								'&:hover': {
-									backgroundColor: '#333',
+									boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.5)',
 								},
-								fontFamily: "Inter"
+								borderRadius: 2,
+								fontFamily: 'Noto Sans',
+								fontSize: {
+									xs: '1rem',
+									sm: '1.2rem',
+								},
+								minWidth: {
+									xs: '150px',
+									sm: '200px',
+								},
+								height: {
+									xs: '50px',
+									sm: '60px'
+								},
 							}}
 						>
 							새 기념관 만들기

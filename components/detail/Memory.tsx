@@ -5,6 +5,7 @@ import {useState} from "react";
 import MemoryForm from "@/components/detail/MemoryForm";
 import Grow from "@mui/material/Grow";
 import {MemoryProps} from "./interfaces";
+import styles from '../../styles/detail/memory.module.css';
 
 export default function Memory({ memories: initialMemories, memorialId, setMemories }: MemoryProps) {
 	const [memories, setMemoriesState] = useState(initialMemories);
@@ -58,6 +59,7 @@ export default function Memory({ memories: initialMemories, memorialId, setMemor
 				{memories.map(({created_at, message, user_name, attachment}, index) => {
 					const date = new Date(created_at);
 					const formattedDate = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+					const htmlMessage = message.replace(/\n/g, '<br>');
 
 					return (
 						<Box key={index} sx={{ p: '1rem', mt: index !== 0 ? '2rem' : '0' }} className={"diff-card-section"}>
@@ -67,23 +69,23 @@ export default function Memory({ memories: initialMemories, memorialId, setMemor
 								<Typography>{formattedDate}</Typography>
 							</div>
 							<div>
-								<div dangerouslySetInnerHTML={{ __html: message }} />
+								<div dangerouslySetInnerHTML={{ __html: htmlMessage }} />
 								{attachment && (
 									/\.(jpg|jpeg|png)$/i.test(attachment.file_name) ? (
 										<img
 											src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 											alt="Memory Image"
-											style={{ width: '100%', marginTop: '1rem' }}
+											className={styles.customImage}
 										/>
 									) : /\.(mp4|mov)$/i.test(attachment.file_name) ? (
-										<video controls style={{ width: '100%', marginTop: '1rem' }}>
+										<video controls className={styles.customImage}>
 											<source
 												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 												type="video/mp4"
 											/>
 										</video>
 									) : /\.(mp3)$/i.test(attachment.file_name) ? (
-										<video controls style={{ width: '100%', marginTop: '1rem', height: '60px' }}>
+										<video controls className={styles.customImage}>
 											<source
 												src={`${process.env.NEXT_PUBLIC_IMAGE}${attachment.file_path}${attachment.file_name}`}
 												type="audio/mp3"

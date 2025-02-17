@@ -13,14 +13,20 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 	const { data: session } = useSession();
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [message, setMessage] = useState("");
+	const [isDisabled, setIsDisabled] = useState(false);
 
 	const handleButtonClick = (flag: boolean) => {
+		if (!session) {
+			alert("로그인을 하셔야 메시지를 쓸 수 있어요");
+			return false;
+		}
 		setShowTextArea(flag);
 	};
 
 	const handleRegisterComment = async () => {
+		setIsDisabled(true);
 		try {
-			if (session) {
+			if (session && !isDisabled) {
 				if (!message) {
 					alert("메시지를 입력해주세요.")
 					return false;
@@ -42,9 +48,15 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 					setVisitorMessagesState([...result.data]);
 					setMessage("");
 				}
+			} else {
+				if (!session) {
+					alert("로그인을 하셔야 메시지를 쓸 수 있어요.");
+				}
 			}
 		} catch (error) {
 			console.error("ERROR: ", error);
+		} finally {
+			setIsDisabled(false);
 		}
 	};
 
@@ -58,6 +70,7 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 				sx={{
 					p: "1rem",
 					fontSize: "1rem",
+					wordWrap: 'break-word',
 				}}
 				className={"diff-card-section"}
 			>
@@ -105,7 +118,12 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 								>
 									취소
 								</Button>
-								<Button variant="contained" onClick={handleRegisterComment}>
+								<Button variant="contained" onClick={handleRegisterComment} disabled={isDisabled} sx={{
+									'&.Mui-disabled': {
+										backgroundColor: 'gray',
+										color: 'white'
+									}
+								}}>
 									게시하기
 								</Button>
 							</Box>
