@@ -19,6 +19,7 @@ export default function MemoryForm({ onHideForm, memorialId, setMemories }: Memo
 	const [message, setMessage] = useState('');
 	const [attachment, setAttachment] = useState<File | null>(null);
 	const { data: session } = useSession();
+	const [isDisabled, setDisabled] = useState(false);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files && event.target.files[0];
@@ -32,8 +33,9 @@ export default function MemoryForm({ onHideForm, memorialId, setMemories }: Memo
 	};
 
 	const handleRegisterStory = async () => {
+		setDisabled(true);
 		try {
-			if (session) {
+			if (session && !isDisabled) {
 				if (!title) {
 					alert("제목을 입력해주세요.")
 					return false;
@@ -71,6 +73,8 @@ export default function MemoryForm({ onHideForm, memorialId, setMemories }: Memo
 			}
 		} catch (error) {
 			console.error("ERROR: ", error);
+		} finally {
+			setDisabled(false);
 		}
 	};
 
@@ -123,7 +127,12 @@ export default function MemoryForm({ onHideForm, memorialId, setMemories }: Memo
 			</Paper>
 			<Box sx={{ textAlign: 'right', mt: '1rem' }}>
 				<Button variant="contained" color="error" sx={{ mr: '.5rem' }} onClick={onHideForm}>취소</Button>
-				<Button variant="contained" onClick={handleRegisterStory}>게시하기</Button>
+				<Button variant="contained" onClick={handleRegisterStory} disabled={isDisabled} sx={{
+					'&.Mui-disabled': {
+						backgroundColor: 'gray',
+						color: 'white'
+					}
+				}}>게시하기</Button>
 			</Box>
 		</>
 	)
