@@ -74,7 +74,7 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 				}}
 				className={"diff-card-section"}
 			>
-				{detail && <div dangerouslySetInnerHTML={{ __html: detail.career_contents }} />}
+				{detail && <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: detail.career_contents }} />}
 			</Container>
 			<Box>
 				<Typography
