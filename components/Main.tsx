@@ -427,7 +427,7 @@ export default function Main({ memorialCards }: MainProps) {
 										},
 										lineHeight: '1.2',
 									}}
-								>{card.user_name}</Typography>
+								>{card.writer_name}</Typography>
 							</Box>
 						))}
 					</Slider>
@@ -476,7 +476,7 @@ export default function Main({ memorialCards }: MainProps) {
 										},
 										lineHeight: '1.2',
 									}}
-								>{card.user_name}</Typography>
+								>{card.writer_name}</Typography>
 							</Grid>
 						))}
 					</Grid>
