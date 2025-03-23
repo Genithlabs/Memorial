@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
+import {encrypt} from "@/utils/cryptUtil";
 
 interface CustomUser {
 	id: string;
@@ -36,7 +37,7 @@ export default NextAuth({
 
 				if (res.ok && user.access_token) {
 					return {
-						id: 'temp-id', // 임시 ID 값
+						id: encrypt(user.id.toString()), // 임시 ID 값
 						access_token: user.access_token,
 						refresh_token: user.refresh_token,
 						is_purchase_request: user.is_purchase_request, // API 응답에서 받아온 값
