@@ -72,7 +72,7 @@ export default function Popup() {
                         wordBreak: 'keep-all',
                     }}
                 >
-                    메모리얼은 요로서비스로 전환 될 예정이에요<br/>
+                    메모리얼은 유료서비스로 전환 될 예정이에요<br/>
                     아래 정보를 입력해주시면 전환 시 <span style={{ color: '#ffb632' }}>90% 할인 혜택</span>을 드려요
                 </Typography>
                 <Box component="form" noValidate sx={{ mt: 1 }}>
