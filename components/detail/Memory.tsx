@@ -69,7 +69,7 @@ export default function Memory({ memories: initialMemories, memorialId, setMemor
 								<Typography>{formattedDate}</Typography>
 							</div>
 							<div>
-								<div dangerouslySetInnerHTML={{ __html: htmlMessage }} />
+								<div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: htmlMessage }} />
 								{attachment && (
 									/\.(jpg|jpeg|png)$/i.test(attachment.file_name) ? (
 										<img

@@ -1,5 +1,4 @@
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import Container from "@mui/material/Container";
 import TabsCustomized from './detail/TabsCustomized';
 import {ALLProps} from './detail/interfaces';
@@ -66,20 +65,10 @@ export default function Detail({ visitorMessages: initialVisitorMessages, memori
 						sx={{
 							width: '100%',
 							height: '350px',
-							background: 'linear-gradient(-45deg, #ac5376, #b4ae64, #4a859b, #4a949b)',
-							backgroundSize: '400% 400%',
-							animation: 'gradientAnimation 5s linear infinite',
-							'@keyframes gradientAnimation': {
-								'0%': {
-									backgroundPosition: '0% 50%',
-								},
-								'50%': {
-									backgroundPosition: '100% 50%',
-								},
-								'100%': {
-									backgroundPosition: '0% 50%',
-								},
-							},
+							backgroundImage: `url(/form-top-bg.jpeg)`,
+							backgroundSize: 'cover',
+							backgroundPosition: 'center',
+							backgroundRepeat: 'no-repeat',
 						}}
 					>
 					</Box>

@@ -193,8 +193,9 @@ export default function Main({ memorialCards }: MainProps) {
 						wordBreak: 'keep-all',
 					}}
 				>
-					"우리 삶, 다 저마다 괜찮아요"<br/>
-					틀리지 않았던 당신의 인생 뜻 깊게 기억하고 전해보세요
+					&quot;우리 삶, 다 저마다 괜찮아요&quot;<br/>
+					틀리지 않았던 당신의 인생<br/>
+					뜻 깊게 기억하고 전해보세요
 				</Typography>
 				<Typography
 					align="center"
@@ -426,7 +427,7 @@ export default function Main({ memorialCards }: MainProps) {
 										},
 										lineHeight: '1.2',
 									}}
-								>{card.user_name}</Typography>
+								>{card.writer_name}</Typography>
 							</Box>
 						))}
 					</Slider>
@@ -475,7 +476,7 @@ export default function Main({ memorialCards }: MainProps) {
 										},
 										lineHeight: '1.2',
 									}}
-								>{card.user_name}</Typography>
+								>{card.writer_name}</Typography>
 							</Grid>
 						))}
 					</Grid>
