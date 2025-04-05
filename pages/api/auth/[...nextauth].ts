@@ -4,6 +4,7 @@ import {encrypt} from "@/utils/cryptUtil";
 
 interface CustomUser {
 	id: string;
+	user_name: string;
 	access_token: string;
 	refresh_token: string;
 	is_purchase_request: boolean;
@@ -38,6 +39,7 @@ export default NextAuth({
 				if (res.ok && user.access_token) {
 					return {
 						id: encrypt(user.id.toString()), // 임시 ID 값
+						user_name: encrypt(user.user_name.toString()),
 						access_token: user.access_token,
 						refresh_token: user.refresh_token,
 						is_purchase_request: user.is_purchase_request, // API 응답에서 받아온 값
@@ -54,6 +56,7 @@ export default NextAuth({
 				token.accessToken = (user as CustomUser).access_token;
 				token.is_purchase_request = (user as CustomUser).is_purchase_request;
 				token.user_id = (user as CustomUser).id;
+				token.user_name = (user as CustomUser).user_name;
 			}
 			return token;
 		},
@@ -62,6 +65,7 @@ export default NextAuth({
 			session.accessToken = `${token.accessToken}`;
 			session.is_purchase_request = token.is_purchase_request ?? false;
 			session.user_id = token.user_id;
+			session.user_name = token.user_name;
 			return session;
 		},
 	},

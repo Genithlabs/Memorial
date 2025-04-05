@@ -5,6 +5,7 @@ declare module 'next-auth' {
         accessToken: string|null;
         is_purchase_request: boolean;
         user_id: string;
+        user_name: string;
     }
 }
 
@@ -13,5 +14,6 @@ declare module 'next-auth/jwt' {
         accessToken?: string | null;
         is_purchase_request?: boolean;
         user_id: string;
+        user_name: stirng;memorial_id: number|null;
     }
 }
