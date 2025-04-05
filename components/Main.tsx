@@ -184,7 +184,6 @@ export default function Main({ memorialCards }: MainProps) {
 							xs: 600,
 							sm: 300,
 						},
-						fontFamily: "'Grandiflora One', sans-serif",
 						zIndex: 1,
 						position: 'relative',
 						marginTop: "130px",
