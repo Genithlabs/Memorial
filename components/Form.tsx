@@ -98,7 +98,7 @@ export default function Form() {
 			if (memorialId) {
 				await handleSubmit();
 			}
-			setActiveStep(2);
+			router.push(`/detail/${memorialId}`);
 		}
 	};
 
@@ -149,10 +149,6 @@ export default function Form() {
 						(Array.isArray(result.message) ? result.message.join(', ') : result.message)
 						: 'ERROR!!';
 					alert(`ERROR: ${errorMessage}`);
-				} else {
-					if (result.data) {
-						setMemorialId(result.data.id);
-					}
 				}
 			} else {
 				alert('로그인 후 이용해주세요.');
@@ -235,7 +231,7 @@ export default function Form() {
 								뒤로
 							</Button>
 							<Button
-								onClick={activeStep === 1 ? handleFinalize : handleNext}
+								onClick={memorialId ? handleNext : handleFinalize}
 								sx={{
 									mt: 3,
 									ml: 1,
