@@ -201,7 +201,7 @@ export default function Form() {
 					}
 				}
 			} else {
-				router.push(`/detail/${memorialId}`);
+				router.push(`/popup`);
 			}
 		} catch (error) {
 			console.log(error);
