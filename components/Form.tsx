@@ -98,7 +98,11 @@ export default function Form() {
 			if (memorialId) {
 				await handleSubmit();
 			}
-			router.push(`/detail/${memorialId}`);
+			if (!session?.is_purchase_request) {
+				router.push('/popup');
+			} else {
+				router.push(`/detail/${memorialId}`);
+			}
 		}
 	};
 

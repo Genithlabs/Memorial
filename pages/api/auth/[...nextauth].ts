@@ -50,13 +50,16 @@ export default NextAuth({
 		}),
 	],
 	callbacks: {
-		async jwt({ token, user }) {
+		async jwt({ token, trigger, session, user}) {
 			// 로그인 직후 user 객체가 존재하면 token에 값을 추가
 			if (user) {
 				token.accessToken = (user as CustomUser).access_token;
 				token.is_purchase_request = (user as CustomUser).is_purchase_request;
 				token.user_id = (user as CustomUser).id;
 				token.user_name = (user as CustomUser).user_name;
+			}
+			if (trigger === "update" && session) {
+				token.is_purchase_request = session.is_purchase_request; // 전달받은 session 데이터로 토큰을 업데이트
 			}
 			return token;
 		},
