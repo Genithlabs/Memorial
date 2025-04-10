@@ -1,25 +1,25 @@
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { Link as MUILink } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import NextLink from 'next/link';
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import dayjs from "dayjs";
+import {decrypt} from "@/utils/cryptUtil";
+import { useRouter } from 'next/router';
 
 export default function Popup() {
-
+    const { data: session, update } = useSession();
+    const [name, setName] = useState(session ? decrypt(session.user_name) : '');
+    useEffect(() => {
+        if (session) {
+            setName(decrypt(session.user_name));
+        }
+    }, [session]);
+    const [phone, setPhone] = useState('');
+    const router = useRouter();
     const slidesData = [
         {
             title: '안전하게 보관하는 추억',
@@ -38,6 +38,66 @@ export default function Popup() {
             description: '그리워 질 때 언제든 기념관에서 기억을 꺼내 아름다운 인생을 기념해주세요',
         },
     ];
+
+    const handleButton = async (flag: boolean) => {
+        if (!flag) {
+            router.push('/')
+        } else {
+            if (session) {
+                const formData = new FormData();
+                if (!name) {
+                    alert("이름을 입력해주세요");
+                    return false;
+                }
+                if (!phone) {
+                    alert("연락처를 입력해주세요");
+                    return false;
+                }
+                // 전화번호 유효성 검증 및 '-' 제거
+                const normalizedPhone = validatePhone(phone);
+                if (!normalizedPhone) {
+                    alert("올바른 연락처를 입력해주세요.");
+                    return false;
+                }
+                formData.append('user_id', decrypt(session.user_id));
+                formData.append('user_name', name);
+                formData.append('user_phone', phone);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/request_purchase`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${session.accessToken}`
+                    },
+                    body: formData,
+                });
+                const result = await response.json();
+                alert(result.message);
+                if (result.result === "success") {
+                    update({is_purchase_request: true});
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${session.accessToken}`
+                        },
+                    });
+                    const result = await response.json();
+                    if (result.result === 'success' && result.data) {
+                        router.push(`/detail/${result.data.id}`);
+                    }
+                }
+            } else {
+                alert('로그인 후 이용 가능합니다.');
+            }
+        }
+    }
+
+    const validatePhone = (phone: string) => {
+        const normalizedPhone = phone.replace(/-/g, '');
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phoneRegex.test(normalizedPhone)) {
+            return false;
+        }
+        return normalizedPhone;
+    };
 
     return (
         <Container component="main" sx={{width: '100%'}} maxWidth={false}>
@@ -84,6 +144,8 @@ export default function Popup() {
                         label="이름"
                         type="text"
                         name="phone"
+                        value={session ? decrypt(session?.user_name) : ""}
+                        onChange={e=>setName(e.target.value)}
                         autoFocus
                     />
                     <TextField
@@ -94,6 +156,7 @@ export default function Popup() {
                         label="휴대전화번호"
                         type="text"
                         name="phone"
+                        onChange={e=>setPhone(e.target.value)}
                     />
                     <Button
                         fullWidth
@@ -109,7 +172,8 @@ export default function Popup() {
                             },
                             borderRadius: 2,
                             fontFamily: 'Noto Sans',
-                    }}
+                        }}
+                        onClick={() => handleButton(true)}
                     >
                         구매하고 싶어요
                     </Button>
@@ -129,6 +193,7 @@ export default function Popup() {
                             borderRadius: 2,
                             fontFamily: 'Noto Sans',
                         }}
+                        onClick={() => handleButton(false)}
                     >
                         아니에요
                     </Button>

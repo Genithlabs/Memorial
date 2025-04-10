@@ -31,14 +31,19 @@ export function encrypt(text: string): string {
  * @returns 복호화된 원본 문자열
  */
 export function decrypt(encryptedText: string): string {
-    const parts = encryptedText.split(':');
-    if (parts.length !== 2) {
-        throw new Error('잘못된 암호화 텍스트 형식입니다.');
+    if (encryptedText) {
+        const parts = encryptedText.split(':');
+        if (parts.length !== 2) {
+            throw new Error('잘못된 암호화 텍스트 형식입니다.');
+        }
+        const [ivHex, encrypted] = parts;
+        const iv = Buffer.from(ivHex, 'hex');
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
+    } else {
+        return encryptedText;
     }
-    const [ivHex, encrypted] = parts;
-    const iv = Buffer.from(ivHex, 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
+
 }

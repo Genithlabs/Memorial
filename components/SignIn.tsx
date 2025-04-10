@@ -32,7 +32,11 @@ export default function SignIn() {
 				if (response.ok) {
 					const result = await response.json();
 					if (result.result === 'success' && result.data) {
-						router.push(`/detail/${result.data.id}`);
+						if (session.is_purchase_request) {
+							router.push(`/detail/${result.data.id}`);
+						} else {
+							router.push('/popup');
+						}
 						return;
 					}
 				}
@@ -124,25 +128,19 @@ export default function SignIn() {
 					<Grid container justifyContent="space-between" alignItems="center">
 						<Grid item>
 							<Typography variant="body2">
-								<NextLink href="/findId" passHref>
-									<MUILink>
-										아이디 찾기
-									</MUILink>
-								</NextLink>
+								<MUILink component={NextLink} href="/findId">
+									아이디 찾기
+								</MUILink>
 								{' / '}
-								<NextLink href="/find-password" passHref>
-									<MUILink>
-										비밀번호 찾기
-									</MUILink>
-								</NextLink>
+								<MUILink component={NextLink} href="/find-password">
+									비밀번호 찾기
+								</MUILink>
 							</Typography>
 						</Grid>
 						<Grid item>
-							<NextLink href="/signup" passHref>
-								<MUILink variant="body2">
-									회원가입
-								</MUILink>
-							</NextLink>
+							<MUILink component={NextLink} href="/signup">
+								회원가입
+							</MUILink>
 						</Grid>
 					</Grid>
 				</Box>
