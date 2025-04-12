@@ -16,6 +16,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
+import MainTopSlider from "@/components/MainTopSlider";
 
 const NextArrow = (props: any) => {
 	const { className, style, onClick } = props;
@@ -251,101 +252,7 @@ export default function Main({ memorialCards }: MainProps) {
 					</NextLink>
 				</Stack>
 			</Box>
-			<Box
-				sx={{
-					position: 'relative',
-					pt: 15,
-					pb: 6,
-				}}
-			>
-				<Box
-					sx={{
-						position: 'absolute',
-						top: 0,
-						left: 0,
-						width: '10%',
-						height: '100%',
-						background: 'linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))',
-						zIndex: 2,
-						pointerEvents: 'none',
-					}}
-				/>
-				<Box
-					sx={{
-						position: 'absolute',
-						top: 0,
-						right: 0,
-						width: '10%',
-						height: '100%',
-						background: 'linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))',
-						zIndex: 2,
-						pointerEvents: 'none',
-					}}
-				/>
-				<Slider {...settings2}>
-					{slidesData.map((slide, index) => (
-							<Box
-								key={index}
-								sx={{
-									padding: {
-										xs: '0 20px',
-										sm: '0 30px',
-										md: '0 50px',
-										lg: '0 100px',
-									}
-								}}
-							>
-								<Card
-									sx={{
-										border: 'none',
-										boxShadow: 'none',
-									}}
-								>
-									<CardMedia
-										component="img"
-										sx={{
-											width: '70%',
-											height: 'auto',
-											boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
-										}}
-										image={`/img${index + 1}.png`}
-									/>
-									<Typography
-										sx={{
-											pt: {
-												xs: '25px',
-												md: '32px',
-											},
-											fontSize: {
-												xs: '20px',
-												md: '28px',
-											},
-											letterSpacing: '-2px',
-											lineHeight: '1.2',
-											wordBreak: 'keep-all',
-										}}
-									>
-										{slide.title}
-									</Typography>
-									<Typography
-										sx={{
-											pt: '12px',
-											fontSize: {
-												xs: '14px',
-												md: '16px'
-											},
-											letterSpacing: '-1.5px',
-											lineHeight: '1.2',
-											wordBreak: 'keep-all',
-										}}
-									>
-										{slide.description}
-									</Typography>
-								</Card>
-							</Box>
-						))}
-				</Slider>
-			</Box>
+			<MainTopSlider/>
 			<Box
 				sx={{
 					bgcolor: 'background.paper',
