@@ -180,10 +180,7 @@ export default function Main({ memorialCards }: MainProps) {
 							sm: '2.5rem',
 							md: '4rem'
 						},
-						fontWeight: {
-							xs: 600,
-							sm: 300,
-						},
+						fontWeight: 300,
 						zIndex: 1,
 						position: 'relative',
 						marginTop: "130px",
