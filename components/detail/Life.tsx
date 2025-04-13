@@ -7,6 +7,18 @@ import { useState, ChangeEvent } from "react";
 import Grow from "@mui/material/Grow";
 import { LifeProps } from "./interfaces";
 import { useSession } from "next-auth/react";
+import {decrypt} from "@/utils/cryptUtil";
+import {styled} from "@mui/system";
+import {useRouter} from "next/router";
+
+const WhiteButton = styled(Button)(() => ({
+	backgroundColor: "white",
+	color: 'black',
+	'&:hover': {
+		backgroundColor: 'white',
+		color: 'black',
+	},
+}));
 
 export default function Life({ visitorMessages: initialVisitorMessages, detail, memorialId, setVisitorMessages }: LifeProps) {
 	const [visitorMessages, setVisitorMessagesState] = useState(initialVisitorMessages);
@@ -14,6 +26,7 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [message, setMessage] = useState("");
 	const [isDisabled, setIsDisabled] = useState(false);
+	const router = useRouter();
 
 	const handleButtonClick = (flag: boolean) => {
 		if (!session) {
@@ -64,6 +77,10 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 		setMessage(e.target.value);
 	};
 
+	const handleMoveForm = () => {
+		router.push('/form');
+	}
+
 	return (
 		<>
 			<Container
@@ -76,6 +93,16 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 			>
 				{detail && <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: detail.career_contents }} />}
 			</Container>
+			{session && parseInt(decrypt(session.user_id)) === detail.user_id && (
+				<Box sx={{ display: 'flex', justifyContent: 'end' }}>
+					<WhiteButton
+						sx={{ backgroundColor: 'white', color: 'black' }}
+						onClick={handleMoveForm}
+					>
+						수정하기
+					</WhiteButton>
+				</Box>
+			)}
 			<Box>
 				<Typography
 					sx={{

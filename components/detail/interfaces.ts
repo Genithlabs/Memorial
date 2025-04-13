@@ -50,6 +50,7 @@ export interface AttachmentBgm {
 
 export interface Detail {
 	id: number
+	user_id: number
 	user_name: string
 	birth_start: string
 	birth_end: string
