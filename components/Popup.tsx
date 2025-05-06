@@ -41,7 +41,20 @@ export default function Popup() {
 
     const handleButton = async (flag: boolean) => {
         if (!flag) {
-            router.push('/')
+            if (session) {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/memorial/view`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${session.accessToken}`
+                    },
+                });
+                const result = await response.json();
+                if (result.result === 'success' && result.data) {
+                    router.push(`/detail/${result.data.id}`);
+                }
+            } else {
+                router.push('/');
+            }
         } else {
             if (session) {
                 const formData = new FormData();
