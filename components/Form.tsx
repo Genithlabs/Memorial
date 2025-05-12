@@ -235,7 +235,13 @@ export default function Form() {
 								뒤로
 							</Button>
 							<Button
-								onClick={memorialId ? handleNext : handleFinalize}
+								onClick={
+									memorialId
+										? handleNext
+										: activeStep === 0
+											? () => setActiveStep(1)
+											: handleFinalize
+								}
 								sx={{
 									mt: 3,
 									ml: 1,
