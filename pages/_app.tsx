@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import '@/styles/globals.css';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import type { AppProps } from 'next/app';
 import { makeTheme } from '@/utils/theme';
@@ -36,12 +36,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
       <SessionProvider session={pageProps.session}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Header />
+            <Component {...pageProps} />
+            {router.pathname !== '/chat' && <Footer />}
+          </ThemeProvider>
+        </StyledEngineProvider>
       </SessionProvider>
   );
 }
