@@ -1,8 +1,45 @@
 // /lib/api/chat.ts
-export async function fetchQuestions() {
-    const res = await fetch('/api/chat?type=questions', { cache: 'no-store' });
-    if (!res.ok) throw new Error('failed to fetch questions');
-    return res.json() as Promise<{ questions: string[] }>;
+type FetchQuestionsResponse = {
+    result?: 'success' | 'fail' | string;
+    message?: string;
+    data?: {
+        name?: string;
+        birth_start?: string;
+        questions?: unknown[];
+        profile?: string;
+    };
+};
+
+export async function fetchQuestions(): Promise<{ questions: string[] }> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/questions`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+    });
+
+    if (!res.ok) return { questions: [] };
+
+    const json = (await res.json()) as FetchQuestionsResponse;
+
+    if (json?.result && json.result !== 'success') return { questions: [] };
+
+    const d = json?.data ?? {};
+    const merged: string[] = [];
+
+    if (typeof d.name === 'string' && d.name.trim()) merged.push(d.name.trim());
+    if (typeof d.birth_start === 'string' && d.birth_start.trim()) merged.push(d.birth_start.trim());
+
+    if (Array.isArray(d.questions)) {
+        merged.push(
+            ...d.questions
+                .filter((q): q is string => typeof q === 'string' && q.trim().length > 0)
+                .map((q) => q.trim())
+        );
+    }
+
+    if (typeof d.profile === 'string' && d.profile.trim()) merged.push(d.profile.trim());
+
+    return { questions: merged };
 }
 
 export type MessageDTO = {
