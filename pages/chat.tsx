@@ -287,6 +287,19 @@ export default function ChatPage() {
 
   const total = questions.length || 1;
   const currentStep = Math.min(currentQuestionIndex + 1, total);
+
+  const qLen = questions.length;
+  const inputMode: 'name' | 'birth_start' | 'question' | 'profile' =
+      qLen > 0
+          ? (currentQuestionIndex === 0
+              ? 'name'
+              : currentQuestionIndex === 1
+                  ? 'birth_start'
+                  : currentQuestionIndex === qLen - 1
+                      ? 'profile'
+                      : 'question')
+          : 'question';
+
   const progress =
       ((currentQuestionIndex + (messages.some((m) => m.isUser) ? 1 : 0)) / total) * 100;
 
@@ -366,6 +379,8 @@ export default function ChatPage() {
                   disabled={isTyping || isComplete || isLoadingQuestions || questions.length === 0}
                   isComplete={isComplete}
                   currentQuestion={currentStep}
+                  totalQuestions={total}
+                  inputMode={inputMode}
               />
             </div>
           </div>

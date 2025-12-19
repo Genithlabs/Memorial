@@ -9,17 +9,38 @@ interface ChatInputProps {
   isComplete?: boolean;
   currentQuestion?: number;
   onFilesChange?: (files: File[]) => void;
+
+  inputMode?: 'name' | 'birth_start' | 'question' | 'profile';
+  totalQuestions?: number;
 }
 
-export default function ChatInput({ onSendMessage, disabled, isComplete, currentQuestion }: ChatInputProps) {
+export default function ChatInput({
+  onSendMessage,
+  disabled,
+  isComplete,
+  currentQuestion,
+  onFilesChange,
+  inputMode,
+  totalQuestions,
+}: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [birthDate, setBirthDate] = useState(''); // Q2: 생년월일용
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isNameQuestion = currentQuestion === 1;       // 이름
-  const isBirthQuestion = currentQuestion === 2;      // 생년월일
-  const isLastQuestion = currentQuestion === 10;      // 파일 업로드
+  const mode: NonNullable<ChatInputProps['inputMode']> =
+      inputMode ??
+      (currentQuestion === 1
+          ? 'name'
+          : currentQuestion === 2
+              ? 'birth_start'
+              : totalQuestions && currentQuestion === totalQuestions
+                  ? 'profile'
+                  : 'question');
+
+  const isNameQuestion = mode === 'name';       // 이름
+  const isBirthQuestion = mode === 'birth_start';      // 생년월일
+  const isLastQuestion = mode === 'profile';      // 파일 업로드
 
   const handleSend = () => {
     if (isLastQuestion && selectedFile) {
