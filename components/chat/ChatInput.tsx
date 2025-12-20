@@ -1,31 +1,52 @@
 'use client';
 
-import { useState, KeyboardEvent, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { KeyboardEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   disabled?: boolean;
+
+  /** 서버 제출까지 완료된 상태 */
   isComplete?: boolean;
   currentQuestion?: number;
+
+  /** profile 파일 선택 변경(부모에서 저장/복원 처리) */
   onFilesChange?: (files: File[]) => void;
+  /** 부모가 들고 있는 파일(IndexedDB 복원 포함) */
+  selectedFile?: File | null;
+
+  /** 제출 중(POST /api/chat/submit) */
+  isSubmitting?: boolean;
+
+  /** 마지막 단계에서 로그인 필요(로그인 후 자동 제출 대기) */
+  showLoginRequired?: boolean;
+  loginHref?: string;
 
   inputMode?: 'name' | 'birth_start' | 'question' | 'profile';
   totalQuestions?: number;
 }
 
 export default function ChatInput({
-  onSendMessage,
-  disabled,
-  isComplete,
-  currentQuestion,
-  onFilesChange,
-  inputMode,
-  totalQuestions,
-}: ChatInputProps) {
+                                    onSendMessage,
+                                    disabled,
+                                    isComplete,
+                                    currentQuestion,
+                                    onFilesChange,
+                                    selectedFile,
+                                    isSubmitting,
+                                    showLoginRequired,
+                                    loginHref = '/signin',
+                                    inputMode,
+                                    totalQuestions,
+                                  }: ChatInputProps) {
   const [message, setMessage] = useState('');
-  const [birthDate, setBirthDate] = useState(''); // Q2: 생년월일용
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [birthDate, setBirthDate] = useState('');
+
+  // 부모가 selectedFile을 안 내려주는 환경도 고려한 내부 상태
+  const [internalFile, setInternalFile] = useState<File | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const mode: NonNullable<ChatInputProps['inputMode']> =
@@ -38,35 +59,53 @@ export default function ChatInput({
                   ? 'profile'
                   : 'question');
 
-  const isNameQuestion = mode === 'name';       // 이름
-  const isBirthQuestion = mode === 'birth_start';      // 생년월일
-  const isLastQuestion = mode === 'profile';      // 파일 업로드
+  const isNameQuestion = mode === 'name';
+  const isBirthQuestion = mode === 'birth_start';
+  const isLastQuestion = mode === 'profile';
+
+  const fileForUI = useMemo(() => {
+    if (typeof selectedFile !== 'undefined') return selectedFile; // controlled 우선
+    return internalFile;
+  }, [selectedFile, internalFile]);
+
+  useEffect(() => {
+    if (typeof selectedFile === 'undefined') return;
+    setInternalFile(selectedFile);
+
+    // input[type=file]은 programmatic set 불가 → state로만 표시
+    if (!selectedFile && fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, [selectedFile]);
+
+  const trulyDisabled = !!disabled || !!isSubmitting;
 
   const handleSend = () => {
-    if (isLastQuestion && selectedFile) {
-      onSendMessage(`파일을 업로드했습니다: ${selectedFile.name}`);
-      setSelectedFile(null);
-      fileInputRef.current && (fileInputRef.current.value = '');
+    if (trulyDisabled) return;
+
+    if (isLastQuestion) {
+      if (fileForUI) {
+        // 파일을 비우지 않음(로그인 후 자동 제출 대비)
+        onSendMessage(`파일을 업로드했습니다: ${fileForUI.name}`);
+      }
       return;
     }
 
     if (isBirthQuestion) {
-      // YYYY-MM-DD 문자열 (input[type=date] 기본 포맷)
-      if (birthDate && !disabled) {
+      if (birthDate) {
         onSendMessage(birthDate);
         setBirthDate('');
       }
       return;
     }
 
-    // 이름(Q1) 및 일반 텍스트(Q3~Q9)
-    if (message.trim() && !disabled) {
+    if (message.trim()) {
       onSendMessage(message.trim());
       setMessage('');
     }
   };
 
-  const handleTextAreaKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleTextAreaKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -87,34 +126,62 @@ export default function ChatInput({
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setSelectedFile(file);
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+
+    if (!file) {
+      setInternalFile(null);
+      onFilesChange?.([]);
+      return;
+    }
+
+    setInternalFile(file);
+    onFilesChange?.([file]); // undefined 방지 완료
   };
 
   const removeFile = () => {
-    setSelectedFile(null);
+    setInternalFile(null);
+    onFilesChange?.([]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  if (isComplete) {
+  // 로그인 필요 화면 (submitPending 상태일 때)
+  if (showLoginRequired) {
     return (
         <div className="bg-white border-b border-gray-200 p-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-2">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="ri-lock-line text-blue-600 text-2xl"></i>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">로그인 후 이용 가능합니다</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">로그인이 필요합니다</h3>
               <p className="text-gray-600 mb-4">
-                소중한 답변을 저장하고 관리하려면 로그인이 필요합니다. 회원가입을 통해 더 많은 기능을 이용해보세요.
+                로그인만 하면, 지금까지 작성한 내용과 선택한 파일로 <b>자동 제출</b>됩니다.
               </p>
               <Link
-                  href="/login"
+                  href={loginHref}
                   className="inline-block px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors whitespace-nowrap cursor-pointer"
               >
                 로그인하기
               </Link>
+            </div>
+            <p className="text-xs text-gray-500">로그인 후 이 페이지로 돌아오면 자동으로 제출을 시도합니다.</p>
+          </div>
+        </div>
+    );
+  }
+
+  // 제출까지 완료
+  if (isComplete) {
+    return (
+        <div className="bg-white border-b border-gray-200 p-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i className="ri-check-line text-green-700 text-2xl"></i>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">제출 완료</h3>
+              <p className="text-gray-600">소중한 답변이 안전하게 저장되었습니다.</p>
             </div>
           </div>
         </div>
@@ -133,21 +200,24 @@ export default function ChatInput({
                     onChange={handleFileSelect}
                     accept="image/*,.pdf,.doc,.docx"
                     className="hidden"
+                    disabled={trulyDisabled}
                 />
-                {selectedFile ? (
+
+                {fileForUI ? (
                     <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                           <i className="ri-file-line text-blue-600"></i>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
-                          <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                          <p className="text-sm font-medium text-gray-900">{fileForUI.name}</p>
+                          <p className="text-xs text-gray-500">{(fileForUI.size / 1024 / 1024).toFixed(2)} MB</p>
                         </div>
                       </div>
                       <button
                           onClick={removeFile}
-                          className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                          disabled={trulyDisabled}
+                          className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       >
                         <i className="ri-close-line text-gray-600 text-sm"></i>
                       </button>
@@ -155,7 +225,8 @@ export default function ChatInput({
                 ) : (
                     <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:bg-gray-100 transition-colors cursor-pointer"
+                        disabled={trulyDisabled}
+                        className="w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
                         <i className="ri-upload-cloud-2-line text-gray-600 text-xl"></i>
@@ -167,7 +238,7 @@ export default function ChatInput({
               </div>
           )}
 
-          {/* 입력 영역: 질문 타입에 따라 분기 */}
+          {/* 입력 영역 */}
           {!isLastQuestion && (
               <>
                 {isNameQuestion && (
@@ -179,13 +250,13 @@ export default function ChatInput({
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyDown={handleTextInputKeyDown}
-                            placeholder={disabled ? '답변을 기다리고 있습니다...' : '이름을 입력하세요 (최대 50자)'}
-                            disabled={disabled}
+                            placeholder={trulyDisabled ? '답변을 기다리고 있습니다...' : '이름을 입력하세요 (최대 50자)'}
+                            disabled={trulyDisabled}
                             className="w-full px-4 py-3 pr-12 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50 text-sm"
                         />
                         <button
                             onClick={handleSend}
-                            disabled={!message.trim() || disabled}
+                            disabled={!message.trim() || trulyDisabled}
                             className="absolute right-2 top-2 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors cursor-pointer"
                         >
                           <i className="ri-send-plane-2-fill text-sm"></i>
@@ -203,12 +274,12 @@ export default function ChatInput({
                             onChange={(e) => setBirthDate(e.target.value)}
                             onKeyDown={handleDateInputKeyDown}
                             placeholder="YYYY-MM-DD"
-                            disabled={disabled}
+                            disabled={trulyDisabled}
                             className="w-full px-4 py-3 pr-12 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50 text-sm"
                         />
                         <button
                             onClick={handleSend}
-                            disabled={!birthDate || disabled}
+                            disabled={!birthDate || trulyDisabled}
                             className="absolute right-2 top-2 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors cursor-pointer"
                         >
                           <i className="ri-send-plane-2-fill text-sm"></i>
@@ -223,16 +294,16 @@ export default function ChatInput({
                   <textarea
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      onKeyPress={handleTextAreaKeyPress}
-                      placeholder={disabled ? '답변을 기다리고 있습니다...' : '답변을 입력하세요...'}
-                      disabled={disabled}
+                      onKeyDown={handleTextAreaKeyDown}
+                      placeholder={trulyDisabled ? '답변을 기다리고 있습니다...' : '답변을 입력하세요...'}
+                      disabled={trulyDisabled}
                       rows={1}
                       className="w-full px-4 py-3 pr-12 bg-gray-50 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50 text-sm"
                       style={{ minHeight: '48px', maxHeight: '120px' }}
                   />
                         <button
                             onClick={handleSend}
-                            disabled={!message.trim() || disabled}
+                            disabled={!message.trim() || trulyDisabled}
                             className="absolute right-2 top-2 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors cursor-pointer"
                         >
                           <i className="ri-send-plane-2-fill text-sm"></i>
@@ -248,10 +319,17 @@ export default function ChatInput({
               <div className="flex justify-end">
                 <button
                     onClick={handleSend}
-                    disabled={!selectedFile || disabled}
+                    disabled={!fileForUI || trulyDisabled}
                     className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
                 >
-                  파일 업로드 완료
+                  {isSubmitting ? (
+                      <span className="inline-flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  제출 중...
+                </span>
+                  ) : (
+                      '파일 업로드 완료'
+                  )}
                 </button>
               </div>
           )}
@@ -266,9 +344,7 @@ export default function ChatInput({
                           ? '이름 입력 후 Enter 또는 전송 버튼을 눌러주세요'
                           : 'Enter를 눌러 전송하거나 Shift+Enter로 줄바꿈하세요'}
             </p>
-            {currentQuestion && (
-                <p className="text-xs text-gray-500">{currentQuestion}번째 질문에 답변하고 계세요</p>
-            )}
+            {currentQuestion && <p className="text-xs text-gray-500">{currentQuestion}번째 질문에 답변하고 계세요</p>}
           </div>
         </div>
       </div>
