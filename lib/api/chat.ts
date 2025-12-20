@@ -1,4 +1,5 @@
 // /lib/api/chat.ts
+
 type FetchQuestionsResponse = {
     result?: 'success' | 'fail' | string;
     message?: string;
@@ -26,6 +27,7 @@ export async function fetchQuestions(): Promise<{ questions: string[] }> {
     const d = json?.data ?? {};
     const merged: string[] = [];
 
+    // 순서: name -> birth_start -> questions[] -> profile
     if (typeof d.name === 'string' && d.name.trim()) merged.push(d.name.trim());
     if (typeof d.birth_start === 'string' && d.birth_start.trim()) merged.push(d.birth_start.trim());
 
@@ -42,34 +44,31 @@ export async function fetchQuestions(): Promise<{ questions: string[] }> {
     return { questions: merged };
 }
 
-export type MessageDTO = {
-    id: string;
-    text: string;
-    isUser: boolean;
-    timestamp: string; // ISO (클라이언트 Date → .toISOString())
-};
-
-export async function postChat(opts: {
-    messages: MessageDTO[];
-    questions: string[];
-    files?: File[];
-    reason?: string;
+export async function submitChat(opts: {
+    accessToken: string;
+    name: string;
+    birth_start: string;
+    prompts: string; // textarea 답변 합친 문자열
+    profile: File;   // 업로드 파일 1개
 }) {
-    const form = new FormData();
-    if (opts.reason) form.append('reason', opts.reason);
-    form.append('messages', JSON.stringify(opts.messages));
-    form.append('questions', JSON.stringify(opts.questions));
-    (opts.files ?? []).forEach((f, i) => form.append('files[]', f, f.name || `upload_${i}`));
+    const formData = new FormData();
+    formData.append('name', opts.name);
+    formData.append('birth_start', opts.birth_start);
+    formData.append('prompts', opts.prompts);
+    formData.append('profile', opts.profile, opts.profile.name);
 
-    const res = await fetch('/api/chat', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/submit`, {
         method: 'POST',
-        body: form,
-        credentials: 'include',
+        headers: {
+            Authorization: `Bearer ${opts.accessToken}`,
+        },
+        body: formData,
     });
 
     if (!res.ok) {
         const text = await res.text().catch(() => '');
-        throw new Error(`POST /api/chat failed: ${res.status} ${text}`);
+        throw new Error(`submitChat failed: ${res.status} ${text}`);
     }
-    return res.json() as Promise<{ ok: true; id: string }>;
+
+    return res.json();
 }
