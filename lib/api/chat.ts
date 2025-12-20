@@ -1,38 +1,74 @@
 // /lib/api/chat.ts
-export async function fetchQuestions() {
-    const res = await fetch('/api/chat?type=questions', { cache: 'no-store' });
-    if (!res.ok) throw new Error('failed to fetch questions');
-    return res.json() as Promise<{ questions: string[] }>;
-}
 
-export type MessageDTO = {
-    id: string;
-    text: string;
-    isUser: boolean;
-    timestamp: string; // ISO (클라이언트 Date → .toISOString())
+type FetchQuestionsResponse = {
+    result?: 'success' | 'fail' | string;
+    message?: string;
+    data?: {
+        name?: string;
+        birth_start?: string;
+        questions?: unknown[];
+        profile?: string;
+    };
 };
 
-export async function postChat(opts: {
-    messages: MessageDTO[];
-    questions: string[];
-    files?: File[];
-    reason?: string;
-}) {
-    const form = new FormData();
-    if (opts.reason) form.append('reason', opts.reason);
-    form.append('messages', JSON.stringify(opts.messages));
-    form.append('questions', JSON.stringify(opts.questions));
-    (opts.files ?? []).forEach((f, i) => form.append('files[]', f, f.name || `upload_${i}`));
+export async function fetchQuestions(): Promise<{ questions: string[] }> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/questions`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+    });
 
-    const res = await fetch('/api/chat', {
+    if (!res.ok) return { questions: [] };
+
+    const json = (await res.json()) as FetchQuestionsResponse;
+
+    if (json?.result && json.result !== 'success') return { questions: [] };
+
+    const d = json?.data ?? {};
+    const merged: string[] = [];
+
+    // 순서: name -> birth_start -> questions[] -> profile
+    if (typeof d.name === 'string' && d.name.trim()) merged.push(d.name.trim());
+    if (typeof d.birth_start === 'string' && d.birth_start.trim()) merged.push(d.birth_start.trim());
+
+    if (Array.isArray(d.questions)) {
+        merged.push(
+            ...d.questions
+                .filter((q): q is string => typeof q === 'string' && q.trim().length > 0)
+                .map((q) => q.trim())
+        );
+    }
+
+    if (typeof d.profile === 'string' && d.profile.trim()) merged.push(d.profile.trim());
+
+    return { questions: merged };
+}
+
+export async function submitChat(opts: {
+    accessToken: string;
+    name: string;
+    birth_start: string;
+    prompts: string; // textarea 답변 합친 문자열
+    profile: File;   // 업로드 파일 1개
+}) {
+    const formData = new FormData();
+    formData.append('name', opts.name);
+    formData.append('birth_start', opts.birth_start);
+    formData.append('prompts', opts.prompts);
+    formData.append('profile', opts.profile, opts.profile.name);
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/submit`, {
         method: 'POST',
-        body: form,
-        credentials: 'include',
+        headers: {
+            Authorization: `Bearer ${opts.accessToken}`,
+        },
+        body: formData,
     });
 
     if (!res.ok) {
         const text = await res.text().catch(() => '');
-        throw new Error(`POST /api/chat failed: ${res.status} ${text}`);
+        throw new Error(`submitChat failed: ${res.status} ${text}`);
     }
-    return res.json() as Promise<{ ok: true; id: string }>;
+
+    return res.json();
 }
