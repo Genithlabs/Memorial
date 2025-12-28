@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
-import Slider from 'react-slick';
+import SliderBase from 'react-slick';
 import { MainProps } from '@/types/main';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -17,6 +17,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 import MainTopSlider from "@/components/MainTopSlider";
+
+const Slider = SliderBase as unknown as ComponentType<any>;
 
 const NextArrow = (props: any) => {
 	const { className, style, onClick } = props;
