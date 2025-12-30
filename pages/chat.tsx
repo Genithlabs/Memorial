@@ -216,6 +216,14 @@ export default function ChatPage() {
     return h + EXTRA_GAP;
   };
 
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+    };
+  }, []);
+
   // 푸터 높이 추적
   useEffect(() => {
     const update = () => {
@@ -495,7 +503,7 @@ export default function ChatPage() {
     try {
       const prompts = (promptAnswers ?? []).join('\n\n');
 
-      await submitChat({
+      const result = await submitChat({
         accessToken,
         name,
         birth_start: birthStart,
@@ -512,6 +520,15 @@ export default function ChatPage() {
       try {
         await idbDeleteFile();
       } catch {}
+
+      clearPersisted();
+
+      const memorialId = result?.data?.id;
+
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+      redirectTimerRef.current = setTimeout(() => {
+        router.replace(`/detail/${memorialId}`);
+      }, 1000);
     } catch (err: any) {
       const msg = err?.message ?? 'unknown error';
       pushBot(`제출에 실패했습니다. 다시 시도해주세요.\n(${msg})`);
