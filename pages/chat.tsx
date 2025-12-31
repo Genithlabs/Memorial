@@ -224,6 +224,70 @@ export default function ChatPage() {
     };
   }, []);
 
+  // reset
+  const [resetNonce, setResetNonce] = useState(0);
+  const resetProgress = useCallback(async () => {
+    // 제출중/체크중엔 초기화 막기
+    if (isSubmitting || isCheckingMemorial) return;
+
+    if (typeof window !== 'undefined') {
+      const ok = window.confirm('저장된 진행 내용을 모두 초기화할까요?');
+      if (!ok) return;
+    }
+
+    // 예약된 리다이렉트가 있으면 취소
+    if (redirectTimerRef.current) {
+      clearTimeout(redirectTimerRef.current);
+      redirectTimerRef.current = null;
+    }
+
+    // 저장 데이터 삭제
+    clearPersisted();
+    try {
+      await idbDeleteFile();
+    } catch {}
+
+    // ref 플래그 리셋 (복원 로직이 다시 "없음"으로 동작하게)
+    restoredRef.current = false;
+    hasPersistedRef.current = false;
+
+    // 상태 리셋
+    setSubmitPending(false);
+    setIsSubmitting(false);
+    setIsTyping(false);
+    setIsComplete(false);
+
+    setName('');
+    setBirthStart('');
+    setPromptAnswers([]);
+
+    setProfileFile(null);
+    setProfileMeta(null);
+
+    setCurrentQuestionIndex(0);
+
+    // 첫 질문 다시 세팅(질문 로딩 완료된 경우)
+    if (!isLoadingQuestions && questions.length > 0) {
+      const firstQuestion: Message = {
+        id: '1',
+        text: questions[0],
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages([firstQuestion]);
+    } else {
+      setMessages([]);
+    }
+
+    setResetNonce((n) => n + 1);
+
+    // 스크롤 맨 위로
+    requestAnimationFrame(() => {
+      messagesWrapRef.current?.scrollTo?.({ top: 0 });
+    });
+  }, [isSubmitting, isCheckingMemorial, isLoadingQuestions, questions]);
+  // reset end
+
   // 푸터 높이 추적
   useEffect(() => {
     const update = () => {
@@ -677,9 +741,20 @@ export default function ChatPage() {
                 </div>
               </div>
 
-              <span className="text-sm text-gray-600">
-              {isComplete ? '완료' : isLoadingQuestions ? '로딩중' : '진행중'}
-            </span>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-600">
+                  {isComplete ? '완료' : isLoadingQuestions ? '로딩중' : '진행중'}
+                </span>
+
+                <button
+                    type="button"
+                    onClick={resetProgress}
+                    disabled={shouldBlockUI || isSubmitting}
+                    className="text-xs text-gray-500 hover:text-gray-900 underline disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  초기화
+                </button>
+              </div>
             </div>
           </div>
 
@@ -709,6 +784,7 @@ export default function ChatPage() {
           <div ref={footerInnerRef} className="max-w-4xl mx-auto w-full px-0 md:px-4 pointer-events-auto">
             <div className="bg-white border-t border-gray-200 md:border md:border-gray-200 rounded-none md:rounded-b-xl">
               <ChatInput
+                  key={resetNonce}
                   onSendMessage={handleSendMessage}
                   onFilesChange={handleFilesChange}
                   selectedFile={profileFile}
