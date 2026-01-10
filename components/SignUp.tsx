@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import {useState} from "react";
+import {useState, useMemo} from "react";
 
 function Copyright() {
 	return (
@@ -27,6 +27,22 @@ function Copyright() {
 export default function SignUp() {
 	const router = useRouter();
 	const [isDisabled, setDisabled] = useState(false);
+	const safeCallbackUrl = useMemo(() => {
+		if (!router.isReady) return null;
+
+		const raw = router.query.callbackUrl;
+		const url = Array.isArray(raw) ? raw[0] : raw;
+		if (!url || typeof url !== 'string') return null;
+
+		try {
+			const decoded = decodeURIComponent(url);
+			if (!decoded.startsWith('/')) return null;
+			if (decoded.startsWith('//')) return null;
+			return decoded;
+		} catch {
+			return null;
+		}
+	}, [router.isReady, router.query.callbackUrl]);
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setDisabled(true);
@@ -61,7 +77,11 @@ export default function SignUp() {
 				});
 
 				if (response.ok) {
-					router.push('/signin');
+					router.push(
+						safeCallbackUrl
+							? `/signin?callbackUrl=${encodeURIComponent(safeCallbackUrl)}`
+							: '/signin'
+					);
 				} else {
 					const result = await response.json();
 					alert('회원 가입 실패: ' + result.error[0]);
@@ -163,7 +183,14 @@ export default function SignUp() {
 						</Button>
 						<Grid container justifyContent="flex-end">
 							<Grid item>
-								<NextLink href="/signin" passHref>
+								<NextLink
+									href={
+										safeCallbackUrl
+											? { pathname: '/signin', query: { callbackUrl: safeCallbackUrl } }
+											: '/signin'
+									}
+									passHref
+								>
 									<MUILink variant="body2" component={"button"}>
 										이미 회원 이신가요?
 									</MUILink>
