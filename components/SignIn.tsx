@@ -173,7 +173,14 @@ export default function SignIn() {
 							</Typography>
 						</Grid>
 						<Grid item>
-							<MUILink component={NextLink} href="/signup">
+							<MUILink
+								component={NextLink}
+								href={
+									safeCallbackUrl
+										? { pathname: '/signup', query: { callbackUrl: safeCallbackUrl } }
+										: '/signup'
+								}
+							>
 								회원가입
 							</MUILink>
 						</Grid>

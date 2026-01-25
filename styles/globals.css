@@ -5,28 +5,28 @@
 
 @font-face {
   font-family: 'Grandiflora One';
-  src: url('../public/fonts/GrandifloraOne-Regular.ttf') format('truetype');
+  src: url('/fonts/GrandifloraOne-Regular.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
 }
 
 @font-face {
   font-family: 'GowunDodum';
-  src: url('../public/fonts/GowunDodum-Regular.ttf') format('truetype');
+  src: url('/fonts/GowunDodum-Regular.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
 }
 
 @font-face {
   font-family: 'Noto Sans';
-  src: url('../public/fonts/NotoSans-Regular.ttf') format('truetype');
+  src: url('/fonts/NotoSans-Regular.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
 }
 
 @font-face {
   font-family: 'Inter';
-  src: url('../public/fonts/Inter_18pt-Regular.ttf') format('truetype');
+  src: url('/fonts/Inter_18pt-Regular.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
 }
