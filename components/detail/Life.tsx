@@ -3,13 +3,42 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import TextAreaCustomized from "./TextAreaCustomized";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useMemo } from "react";
 import Grow from "@mui/material/Grow";
 import { LifeProps } from "./interfaces";
 import { useSession } from "next-auth/react";
 import {decrypt} from "@/utils/cryptUtil";
 import {styled} from "@mui/system";
 import {useRouter} from "next/router";
+import { marked } from "marked";
+
+/** 콘텐츠 포맷 감지: html > markdown > plain text (앱 MemorialBio 동일 로직) */
+function detectFormat(content: string): 'html' | 'markdown' | 'text' {
+	if (!content) return 'text';
+	if (/<[a-z][\s\S]*>/i.test(content)) return 'html';
+
+	const mdPatterns = [
+		/^#{1,6}\s/gm,
+		/\*\*[^*]+\*\*/g,
+		/^[-*]\s/gm,
+		/^\d+\.\s/gm,
+		/\[.+\]\(.+\)/g,
+		/^>/gm,
+		/^---$/gm,
+	];
+	let distinctCount = 0;
+	let hasRepeat = false;
+	for (const p of mdPatterns) {
+		const matches = content.match(p);
+		if (matches) {
+			distinctCount++;
+			if (matches.length >= 2) hasRepeat = true;
+		}
+	}
+	if (distinctCount >= 2 || hasRepeat) return 'markdown';
+
+	return 'text';
+}
 
 const WhiteButton = styled(Button)(() => ({
 	backgroundColor: "white",
@@ -27,6 +56,13 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 	const [message, setMessage] = useState("");
 	const [isDisabled, setIsDisabled] = useState(false);
 	const router = useRouter();
+
+	const bioFormat = useMemo(() => detectFormat(detail?.career_contents || ''), [detail?.career_contents]);
+	const bioHtml = useMemo(() => {
+		if (!detail?.career_contents) return '';
+		if (bioFormat === 'markdown') return marked.parse(detail.career_contents) as string;
+		return detail.career_contents;
+	}, [detail?.career_contents, bioFormat]);
 
 	const handleButtonClick = (flag: boolean) => {
 		if (!session) {
@@ -91,7 +127,11 @@ export default function Life({ visitorMessages: initialVisitorMessages, detail, 
 				}}
 				className={"diff-card-section"}
 			>
-				{detail && <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: detail.career_contents }} />}
+				{detail && (
+					bioFormat === 'text'
+						? <div style={{ whiteSpace: 'pre-wrap' }}>{detail.career_contents}</div>
+						: <div style={{ whiteSpace: bioFormat === 'html' ? 'pre-wrap' : undefined }} dangerouslySetInnerHTML={{ __html: bioHtml }} />
+				)}
 			</Container>
 			{session && parseInt(decrypt(session.user_id)) === detail.user_id && (
 				<Box sx={{ display: 'flex', justifyContent: 'end' }}>
