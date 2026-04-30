@@ -1,10 +1,18 @@
 'use client';
 
+import Head from 'next/head';
 import Link from 'next/link';
 
 export default function IntroPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <Head>
+        {/* Meta App Links — 페이스북 인앱 브라우저(IAB)가 메모리얼 앱으로 연결되도록 안내 */}
+        <meta property="al:android:url" content="https://yourmemorial.kr/intro" />
+        <meta property="al:android:package" content="kr.yourmemorial.app" />
+        <meta property="al:android:app_name" content="메모리얼" />
+      </Head>
+      <div className="min-h-screen bg-white">
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center min-h-[calc(100vh-80px)]">
@@ -140,5 +148,6 @@ export default function IntroPage() {
         </div>
       </main>
     </div>
+    </>
   );
 }
