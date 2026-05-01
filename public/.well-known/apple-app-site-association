@@ -1,0 +1,21 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID0000.kr.yourmemorial.app",
+        "paths": [
+          "/intro",
+          "/intro?*",
+          "/memorial/[0-9]+",
+          "/memorial/[0-9]+?*",
+          "NOT /memorial/edit",
+          "NOT /memorial/create/*",
+          "NOT /admin/*",
+          "NOT /api/*",
+          "NOT /.well-known/*"
+        ]
+      }
+    ]
+  }
+}
